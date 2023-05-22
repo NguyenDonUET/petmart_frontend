@@ -10,8 +10,27 @@ import {
   Spacer,
   Text,
   useToast,
+  Tooltip,
+  IconButton,
+  Textarea,
+  FormControl,
+  FormLabel,
+  FormHelperText,
+  Input,
+  FormErrorMessage,
+} from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import { Field, Form, Formik, useFormik } from "formik";
 import { AiOutlineEye } from "react-icons/ai";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -24,12 +43,17 @@ import PostReviews from "../layouts/ProductReviews/PostReviews.jsx";
 import { getPostById } from "../redux/actions/postActions.js";
 import numberWithCommas from "../utils/numberWithCommas.js";
 import LoadingList from "../components/Admin/LoadingList.jsx";
-import { EditIcon } from "@chakra-ui/icons";
+import { EditIcon, CalendarIcon } from "@chakra-ui/icons";
 import ReviewPost from "../components/ReviewPost/ReviewPost.jsx";
+import moment from "moment";
+import * as Yup from "yup";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const PostDetail = () => {
   const [postInfo, setPostInfo] = useState(null);
   const [creator, setCreator] = useState(null);
+  const [extendDate, setExtendDate] = useState();
   const { id } = useParams();
   const toast = useToast();
 
@@ -40,6 +64,8 @@ const PostDetail = () => {
   const { userInfo } = user;
   const navigate = useNavigate();
   const numOfcomment = 4;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  let today = new Date();
 
   useEffect(() => {
     dispatch(getPostById(id));
@@ -64,6 +90,15 @@ const PostDetail = () => {
     }
   }, [error]);
   // console.log(singlePost);
+
+  const handleExtendDateChange = (date) => {
+    setExtendDate(date);
+  }
+
+  const handleExtendDateSelect = (date) => {
+    setExtendDate(date);
+  }
+
   return (
     <>
       {loading && <LoadingList />}
@@ -79,17 +114,35 @@ const PostDetail = () => {
                 </Heading>
                 {/* Nếu user hiện tại là tác giả bài viết */}
                 {userInfo && userInfo.user.id === creator.id && (
-                  <Button
-                    ml={"10px"}
-                    leftIcon={<EditIcon />}
-                    colorScheme="teal"
-                    variant={"outline"}
-                    onClick={() => navigate(`/posts/update/${postInfo.id}`)}
-                  >
-                    Chỉnh sửa
-                  </Button>
+                  <Flex>
+                    <Tooltip label={'Gia hạn bài viết'} placement="top">
+                      <IconButton
+                        variant='outline'
+                        colorScheme='teal'
+                        aria-label='Gia hạn bài đăng'
+                        icon={<CalendarIcon />}
+                        onClick={onOpen}
+                      />
+                    </Tooltip>
+                    <Tooltip label={'Chỉnh sửa bài đăng'} placement="top">
+                      <Button
+                        ml={"10px"}
+                        leftIcon={<EditIcon />}
+                        colorScheme="teal"
+                        variant={"outline"}
+                        onClick={() => navigate(`/posts/update/${postInfo.id}`)}
+                      >
+                        Chỉnh sửa
+                      </Button>
+                    </Tooltip>
+                  </Flex>
                 )}
               </Flex>
+              {userInfo && userInfo.user.id === creator.id && (
+                <Flex pt={2} justifyContent={'end'} alignItems={'center'}>
+                  <Text as={'b'} color={'#4a5568'}>{`Bài viết sẽ hết hạn sau ${moment(singlePost.post.endDate).diff(today, "days")} ngày`}</Text>
+                </Flex>
+              )}
               <Flex padding={"12px"} alignItems={"center"}>
                 <Flex height={"32px"} gap="10px" alignItems={"center"}>
                   <Flex>
@@ -158,6 +211,101 @@ const PostDetail = () => {
           </Flex>
           <PostInformation postInfo={postInfo} />
           <PostReviews />
+          <Modal
+            blockScrollOnMount={false}
+            isOpen={isOpen}
+            onClose={onClose}
+            closeOnOverlayClick={false}
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>
+                <Text
+                  display={'flex'}
+                  justifyContent={'center'}
+                  color={"#f5897e"}
+                  py={'4'}
+                >
+                  GIA HẠN BÀI VIẾT
+                </Text>
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Formik
+                  initialValues={{
+                    extendDate: "",
+                    pid: singlePost.post.id,
+                  }}
+                  onSubmit={(values) => { console.log(values); }}
+                  validationSchema={Yup.object().shape({
+                    extendDate: Yup.string().required('Vui lòng chọn ngày gia hạn kế tiếp'),
+                  })
+                  }
+                >
+                  {
+                    ({
+                      values,
+                      errors,
+                      touched,
+                      handleChange,
+                      handleBlur,
+                      handleSubmit,
+                      isSubmitting,
+                      setFieldValue,
+                    }) => (
+                      <Form id="extendDate">
+                        <Field name="extendDate">
+                          {({ field, form }) => (
+                            <FormControl
+                              isRequired
+                              isInvalid={form.errors.extendDate && form.touched.extendDate}
+                              mb={"4"}
+                            >
+                              <FormLabel>Ngày gia hạn mới</FormLabel>
+                              <DatePicker
+                                className=""
+                                selected={extendDate}
+                                onChange={(date) => {
+                                  handleExtendDateChange(date);
+                                  form.setValues({ ...form.values, extendDate: date });
+                                }}
+                                onSelect={(date) => {
+                                  handleExtendDateSelect(date);
+                                  form.setValues({ ...form.values, extendDate: date });
+                                }}
+                                minDate={moment().toDate()}
+                                dateFormat="dd/MM/yyyy"
+                              />
+                              <FormHelperText>
+                                Sau thời gian trên bài đăng sẽ hết hạn
+                              </FormHelperText>
+                              <FormErrorMessage>{form.errors.extendDate}</FormErrorMessage>
+                            </FormControl>
+                          )}
+                        </Field>
+                      </Form>
+                    )
+                  }
+                </Formik>
+              </ModalBody>
+
+              <ModalFooter display={"flex"} justifyContent={"center"}>
+                <Button
+                  type="submit"
+                  colorScheme="blue"
+                  mr={3}
+                  bg="#f5897e"
+                  _hover={{ bg: "#f56051" }}
+                  form="extendDate"
+                >
+                  Xác nhận
+                </Button>
+                <Button variant="ghost" onClick={onClose}>
+                  Hủy bỏ
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
         </Box>
       )}
     </>
