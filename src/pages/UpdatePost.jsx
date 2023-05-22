@@ -54,6 +54,7 @@ const UpdatePost = () => {
   const [district, setDistrict] = useState([]);
   const [commune, setCommune] = useState([]);
   const [genre, setGenre] = useState([]);
+  const [files, setFiles] = useState([]);
   const [endDatee, setEndDatee] = useState(moment().add(7, "days").toDate());
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -83,6 +84,27 @@ const UpdatePost = () => {
     fetchProvince();
     console.log("lấy tỉnh");
     dispatch(getPostById(id));
+
+    if (singlePost) {
+      console.log(singlePost);
+      images = singlePost.post.images;
+      for (let i = 0; i < images.length; i++) {
+        let substring = images[i].split("/");
+        let name = substring[substring.length - 1];
+        fetch(images[i])
+          .then(res => res.blob())
+          .then(blob => {
+            let objectURL = URL.createObjectURL(blob);
+            let file = new File([blob], name, { type: blob.type });
+            file.preview = objectURL;
+            defaultFiles.push(file);
+            setFiles(prevFiles => {
+              return prevFiles.concat(file);
+            });
+          })
+          console.log(defaultFiles);
+      }
+    }
   }, []);
 
   let postInfo = null;
@@ -133,18 +155,19 @@ const UpdatePost = () => {
     //   setEndDatee(dateObject);
     // }
 
-    for (let i = 0; i < images.length; i++) {
-      let substring = images[i].split("/");
-      let name = substring[substring.length - 1];
-      fetch(images[i])
-        .then(res => res.blob())
-        .then(blob => {
-          let objectURL = URL.createObjectURL(blob);
-          let file = new File([blob], name, { type: blob.type });
-          file.preview = objectURL;
-          defaultFiles.push(file);
-        })
-    }
+    // for (let i = 0; i < images.length; i++) {
+    //   let substring = images[i].split("/");
+    //   let name = substring[substring.length - 1];
+    //   fetch(images[i])
+    //     .then(res => res.blob())
+    //     .then(blob => {
+    //       let objectURL = URL.createObjectURL(blob);
+    //       let file = new File([blob], name, { type: blob.type });
+    //       file.preview = objectURL;
+    //       defaultFiles.push(file);
+    //       console.log(files);
+    //     })
+    // }
   }
 
   const handleProvinceChange = (e, defaultProvince) => {
@@ -740,7 +763,7 @@ const UpdatePost = () => {
                           onUploaded={(e) => {
                             form.setValues({ ...form.values, images: e });
                           }}
-                          defaultFiles={defaultFiles}
+                          defaultFiles={files}
                         />
                         <FormErrorMessage>
                           {form.errors.images}
