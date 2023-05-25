@@ -109,8 +109,8 @@ const CreatePost = () => {
     gender: Yup.string()
       .required("Vui lòng chọn trường này")
       .oneOf(["Đực", "Cái"], "Vui lòng chọn trường này"),
-      genre: Yup.string().required("Vui lòng chọn trường này"),
-      weight: Yup.number()
+    //genre: Yup.string().required("Vui lòng chọn trường này"),
+    weight: Yup.number()
       .required("Vui lòng chọn trường này")
       .positive("Cân nặng phải là một số dương"),
     age: Yup.number()
@@ -154,6 +154,7 @@ const CreatePost = () => {
             commune: "",
             address: "",
             species: "",
+            genre: "",
             quantity: "",
             gender: "",
             price: "",
@@ -166,6 +167,7 @@ const CreatePost = () => {
           }}
           onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
             handleSubmit(values);
+            //console.log(values);
           }}
           validationSchema={validationSchema}
         >
@@ -194,7 +196,7 @@ const CreatePost = () => {
                 )}
               </Field>
 
-              <Field name="species">
+              {/* <Field name="species">
                 {({ field, form }) => (
                   <FormControl
                     isRequired
@@ -210,7 +212,7 @@ const CreatePost = () => {
                         })
                       }
                     >
-                      {/* <option value={''} disabled hidden selected >Xin mời chọn</option> */}
+                      
                       <option value={"Mèo"}>Mèo</option>
                       <option value={"Chó"}>Chó</option>
                       <option value={"Chuột Hamster"}>Chuột Hamster</option>
@@ -219,7 +221,71 @@ const CreatePost = () => {
                     <FormErrorMessage>{form.errors.species}</FormErrorMessage>
                   </FormControl>
                 )}
-              </Field>
+              </Field> */}
+
+<Grid templateColumns={"repeat(2, 1fr)"} gap={4}>
+                <GridItem>
+                  <Field name="species">
+                    {({ field, form }) => (
+                      <FormControl
+                        isRequired
+                        isInvalid={form.errors.species && form.touched.species}
+                        mb={"4"}
+                      >
+                        <FormLabel>Loài</FormLabel>
+                        <Select
+                          placeholder='Chọn loài'
+                          onChange={(e) => {
+                            handleSpeciesChange(e);
+                            form.setValues({
+                              ...form.values,
+                              species: e.target.value,
+                            });
+                          }}
+                        >
+                          {speciesGenre.map((s) => (
+                            <option key={s.Id} value={s.Name}>
+                              {s.Name}
+                            </option>
+                          ))}
+                        </Select>
+                        <FormErrorMessage>{form.errors.species}</FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
+                </GridItem>
+                <GridItem>
+                  <Field name="genre">
+                    {({ field, form }) => (
+                      <FormControl
+                        
+                        isInvalid={form.errors.genre && form.touched.genre}
+                        mb={"4"}
+                      >
+                        <FormLabel>Giống</FormLabel>
+                        <Select
+                          placeholder='Chọn giống'
+                          onChange={(e) => {
+                            form.setValues({
+                              ...form.values,
+                              genre: e.target.value,
+                            })
+                          }}
+                        >
+                          
+                          {genre.map((g) => (
+                            <option key={g.Id} value={g.Name}>
+                              {g.Name}
+                            </option>
+                          ))}
+                        </Select>
+                        <FormErrorMessage>{form.errors.species}</FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
+                </GridItem>
+              </Grid>
+
 
               <Field name="quantity">
                 {({ field, form }) => (
@@ -251,69 +317,29 @@ const CreatePost = () => {
                 )}
               </Field>
 
-              <Grid templateColumns={"repeat(2, 1fr)"} gap={4}>
-                <GridItem>
-                  <Field name="species">
-                    {({ field, form }) => (
-                      <FormControl
-                        isRequired
-                        isInvalid={form.errors.species && form.touched.species}
-                        mb={"4"}
-                      >
-                        <FormLabel>Loài</FormLabel>
-                        <Select
-                          placeholder='Chọn loài'
-                          onChange={(e) => {
-                            handleSpeciesChange(e);
-                            form.setValues({
-                              ...form.values,
-                              species: e.target.value,
-                            });
-                          }}
-                        >
-                          {/* <option value={''} disabled hidden selected >Xin mời chọn</option> */}
-                          {speciesGenre.map((s) => (
-                            <option key={s.Id} value={s.Name}>
-                              {s.Name}
-                            </option>
-                          ))}
-                        </Select>
-                        <FormErrorMessage>{form.errors.species}</FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                </GridItem>
-                <GridItem>
-                  <Field name="genre">
-                    {({ field, form }) => (
-                      <FormControl
-                        isRequired
-                        isInvalid={form.errors.genre && form.touched.genre}
-                        mb={"4"}
-                      >
-                        <FormLabel>Giống</FormLabel>
-                        <Select
-                          placeholder='Chọn giống'
-                          onChange={(e) => {
-                            form.setValues({
-                              ...form.values,
-                              genre: e.target.value,
-                            })
-                          }}
-                        >
-                          {/* <option value={''} disabled hidden selected >Xin mời chọn</option> */}
-                          {genre.map((g) => (
-                            <option key={g.Id} value={g.Name}>
-                              {g.Name}
-                            </option>
-                          ))}
-                        </Select>
-                        <FormErrorMessage>{form.errors.species}</FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                </GridItem>
-              </Grid>
+              <Field name="gender">
+                {({ field, form }) => (
+                  <FormControl
+                    isRequired
+                    isInvalid={form.errors.gender && form.touched.gender}
+                    mb={"4"}
+                  >
+                    <FormLabel>Giới tính</FormLabel>
+                    <RadioGroup
+                      {...field}
+                      onChange={(value) =>
+                        form.setValues({ ...form.values, gender: value })
+                      }
+                    >
+                      <Radio value="Đực">Giống đực</Radio>
+                      <Radio value="Cái" pl={"30%"}>
+                        Giống cái
+                      </Radio>
+                    </RadioGroup>
+                    <FormErrorMessage>{form.errors.gender}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
 
               <Grid templateColumns={"repeat(2, 1fr)"} gap={4}>
                 <GridItem>
@@ -326,7 +352,7 @@ const CreatePost = () => {
                       >
                         <FormLabel>Cân nặng (kg)</FormLabel>
                         <NumberInput
-                          // {...field}
+                          
                           value={form.values.weight}
                           onChange={(valueNumber) =>
                             form.setValues({
@@ -363,7 +389,6 @@ const CreatePost = () => {
                         <FormLabel>Tuổi (tháng)</FormLabel>
 
                         <NumberInput
-                          // {...field}
                           value={form.values.age}
                           onChange={(valueNumber) =>
                             form.setValues({ ...form.values, age: valueNumber })
