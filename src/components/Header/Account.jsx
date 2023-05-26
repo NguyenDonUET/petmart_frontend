@@ -71,6 +71,7 @@ const Account = () => {
       isClosable: true,
       position: "top",
     });
+    navigate('/');
   };
   const handleClick = (link) => {
     if (link.text === "Đăng xuất") {
@@ -84,7 +85,7 @@ const Account = () => {
     <Menu>
       <MenuButton>
         <HStack>
-          <Avatar boxSize={8}>
+          <Avatar boxSize={8} name={userInfo ? userInfo.user.username : ''}>
             {userInfo && <AvatarBadge boxSize="18px" bg="green.500" />}
           </Avatar>
           <Text>{userInfo ? userInfo.user.username : "Tài khoản"}</Text>

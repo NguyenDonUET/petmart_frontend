@@ -54,6 +54,7 @@ const PostDetail = () => {
   const [postInfo, setPostInfo] = useState(null);
   const [creator, setCreator] = useState(null);
   const [extendDate, setExtendDate] = useState();
+//  const [endDate, setEndDate] = useState();
   const { id } = useParams();
   const toast = useToast();
 
@@ -89,7 +90,12 @@ const PostDetail = () => {
       });
     }
   }, [error]);
-  // console.log(singlePost);
+
+  let dateObject = null;
+  if(singlePost && extendDate == undefined) {
+      dateObject = new Date(singlePost.post.endDate);
+      setExtendDate(dateObject);
+    }
 
   const handleExtendDateChange = (date) => {
     setExtendDate(date);
@@ -261,9 +267,9 @@ const PostDetail = () => {
                               isInvalid={form.errors.extendDate && form.touched.extendDate}
                               mb={"4"}
                             >
-                              <FormLabel>Ngày gia hạn mới</FormLabel>
+                              <FormLabel>Ngày hết hạn</FormLabel>
                               <DatePicker
-                                className=""
+                                className="extendDate"
                                 selected={extendDate}
                                 onChange={(date) => {
                                   handleExtendDateChange(date);
@@ -277,7 +283,7 @@ const PostDetail = () => {
                                 dateFormat="dd/MM/yyyy"
                               />
                               <FormHelperText>
-                                Sau thời gian trên bài đăng sẽ hết hạn
+                                Vui lòng chọn ngày hết hạn mới
                               </FormHelperText>
                               <FormErrorMessage>{form.errors.extendDate}</FormErrorMessage>
                             </FormControl>

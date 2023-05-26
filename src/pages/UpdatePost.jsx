@@ -125,13 +125,13 @@ const UpdatePost = () => {
     let defaultEndDate = singlePost.post.endDate;
     let defaultDate = moment().add(7, "days").toDate();
 
-    let sampleProvince = province.find((p) => p.Name === defaultProvince);
+    let sampleProvince = province.find((p) => p.Name.indexOf(defaultProvince) !== -1);
     let defaultGenre = speciesGenre.find((s) => s.Name === postInfo.species);
 
     if (district.length == 0 && sampleProvince != undefined) {
       setDistrict(sampleProvince.Districts);
       let sampleDistrict = sampleProvince.Districts.find(
-        (d) => d.Name === defaultDistrict
+        (d) => d.Name.indexOf(defaultDistrict) !== -1
       );
       if (commune.length == 0) {
         setCommune(sampleDistrict.Wards);
@@ -609,7 +609,7 @@ const UpdatePost = () => {
                             <FormLabel></FormLabel>
                             <Select
                               placeholder="Chọn tỉnh thành"
-                              //defaultValue={`${postInfo.province}`}
+                              defaultValue={`${postInfo.province}`}
                               onChange={(e) => {
                                 handleProvinceChange(e, postInfo.province);
                                 form.setValues({
@@ -619,7 +619,7 @@ const UpdatePost = () => {
                               }}
                             >
                               {province.map((c) => (
-                                <option key={c.Id} value={c.Name} selected={postInfo.province == c.Name}>
+                                <option key={c.Id} value={c.Name} >
                                   {c.Name}
                                 </option>
                               ))}
@@ -644,7 +644,7 @@ const UpdatePost = () => {
                             <FormLabel></FormLabel>
                             <Select
                               placeholder="Chọn quận huyện"
-                              //defaultValue={`${postInfo.district}`}
+                              defaultValue={`${postInfo.district}`}
                               onChange={(e) => {
                                 handleDistrictChange(e);
                                 form.setValues({
@@ -654,7 +654,7 @@ const UpdatePost = () => {
                               }}
                             >
                               {district.map((c) => (
-                                <option key={c.Id} value={c.Name} selected={postInfo.district == c.Name}>
+                                <option key={c.Id} value={c.Name} >
                                   {c.Name}
                                 </option>
                               ))}
@@ -679,7 +679,7 @@ const UpdatePost = () => {
                             <FormLabel></FormLabel>
                             <Select
                               placeholder="Chọn phường xã"
-                              //defaultValue={`${postInfo.commune}`}
+                              defaultValue={`${postInfo.commune}`}
                               onChange={(e) =>
                                 form.setValues({
                                   ...form.values,
@@ -688,7 +688,7 @@ const UpdatePost = () => {
                               }
                             >
                               {commune.map((c) => (
-                                <option key={c.Id} value={c.Name} selected={postInfo.commune == c.Name}>
+                                <option key={c.Id} value={c.Name} >
                                   {c.Name}
                                 </option>
                               ))}

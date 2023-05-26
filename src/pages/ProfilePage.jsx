@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCreatedPosts, getFavouritePosts } from "../redux/actions/postActions";
 import { setCreatedPostList, setFavouritePostList } from "../redux/slices/post";
@@ -22,7 +22,11 @@ import {
    FormControl,
    FormLabel,
    Input,
+   InputGroup,
+   InputRightElement,
    FormErrorMessage,
+   Icon,
+   useToast,
 } from "@chakra-ui/react";
 import {
    Modal,
@@ -35,12 +39,15 @@ import {
    useDisclosure,
 } from "@chakra-ui/react";
 import { IconButton } from '@chakra-ui/react'
-import { EditIcon } from "@chakra-ui/icons";
+import { EditIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { IoKey, IoKeyOutline } from 'react-icons/io5';
 import { Avatar, AvatarBadge, AvatarGroup } from '@chakra-ui/react';
 import { Field, Form, Formik, useFormik } from "formik";
 import * as Yup from "yup";
 import LoadingList from "../components/Admin/LoadingList";
 import SinglePost from "../components/Posts/SinglePost";
+import { editPassword, logout } from "../redux/actions/userActions";
+import { useNavigate } from "react-router-dom";
 
 
 const mapApprove = {
@@ -49,13 +56,22 @@ const mapApprove = {
 
 
 const ProfilePage = () => {
+   // isOpen cho modal
+   const [modalEdit, setModalEdit] = useState(false);
+   const [modalPassword, setModalPassword] = useState(false);
+
+   // Show Icons
+   const [showOldPassword, setShowOldPassword] = useState(false);
+   const [showNewPassword, setShowNewPassword] = useState(false);
 
    // lấy dữ liệu
    const dispatch = useDispatch();
+   const navigate = useNavigate()
+   const toast = useToast();
    const user = useSelector((state) => state.user);
    const post = useSelector((state) => state.post);
-   const { loading, error, createdPostList, favouritePostList } = post;
-   const { userInfo } = user;
+   const { loading, createdPostList, favouritePostList } = post;
+   const { userInfo, error } = user;
    console.log(userInfo);
 
    // Modal
@@ -81,11 +97,71 @@ const ProfilePage = () => {
       dispatch(getFavouritePosts(userInfo.user.id));
    }, []);
 
+   // hiển thị thông báo nếu có lỗi
+   useEffect(() => {
+      if (error) {
+         toast({
+            description: error,
+            status: "error",
+            isClosable: true,
+            position: "top",
+         });
+      }
+   }, [error]);
+
+   // handleModal
+   const handleOpenModalEdit = () => {
+      setModalEdit(true);
+   }
+
+   const handleOpenModalPassword = () => {
+      setModalPassword(true);
+   }
+
+   const handleCloseModalEdit = () => {
+      setModalEdit(false);
+   }
+
+   const handleCloseModalPassword = () => {
+      setModalPassword(false);
+   }
+
+   const handleShowOldPassword = () => {
+      setShowOldPassword(!showOldPassword);
+   }
+
+   const handleShowNewPassword = () => {
+      setShowNewPassword(!showNewPassword);
+   }
 
    // submit
    const handleSubmit = (values) => {
       //dispatch(updateUser(values));
       console.log(values);
+   }
+
+   const handleEditPasswordSubmit = (values) => {
+      console.log(values);
+      dispatch(editPassword(values));
+      if (!error) {
+         toast({
+            description: "Đổi mật khẩu thành công. Xin vui lòng đăng nhập lại.",
+            status: "success",
+            isClosable: true,
+            position: "top",
+         });
+         //navigate(`/`);
+         //dispatch(logout());
+      }
+      else {
+         toast({
+            description: error,
+            status: "error",
+            isClosable: true,
+            position: "top",
+         });
+      }
+
    }
 
    const styleText = {
@@ -125,21 +201,35 @@ const ProfilePage = () => {
                >
                   {userInfo.user.username}
                </Text>
-               {}
-               <Tooltip
-                  label={'Chỉnh sửa thông tin cá nhân'}
-                  aria-label={'Chỉnh sửa thông tin cá nhân'}
-               >
-                  <IconButton
-                     mt={'3px'}
-                     colorScheme='teal'
-                     bg="#f5897e"
-                     _hover={{ bg: "#f56051" }}
-                     aria-label='Chỉnh sửa thông tin cá nhân'
-                     icon={<EditIcon />}
-                     onClick={onOpen}
-                  />
-               </Tooltip>
+               <Flex justifyContent={'end'}>
+                  <Tooltip
+                     label={'Đổi mật khẩu'}
+                     aria-label={'Đổi mật khẩu'}
+                  >
+                     <IconButton
+                        mt={'3px'}
+                        colorScheme="teal"
+                        variant={"outline"}
+                        aria-label='Đổi mật khẩu'
+                        icon={<Icon as={IoKeyOutline} />}
+                        onClick={handleOpenModalPassword}
+                     />
+                  </Tooltip>
+                  <Tooltip
+                     label={'Chỉnh sửa thông tin cá nhân'}
+                     aria-label={'Chỉnh sửa thông tin cá nhân'}
+                  >
+                     <IconButton
+                        mt={'3px'}
+                        ml={"10px"}
+                        colorScheme="teal"
+                        variant={"outline"}
+                        aria-label='Chỉnh sửa thông tin cá nhân'
+                        icon={<EditIcon />}
+                        onClick={handleOpenModalEdit}
+                     />
+                  </Tooltip>
+               </Flex>
             </Flex>
             {userInfo.user.role &&
                userInfo.user.role == 'admin' &&
@@ -185,8 +275,8 @@ const ProfilePage = () => {
                   onChange={(index) => updatePostList(index)}
                   bgColor={'white'}
                >
-                  <TabList 
-                  gap={"82px"}
+                  <TabList
+                     gap={"82px"}
                   >
                      <Tab >Thông tin tài khoản</Tab>
                      <Tab >Bài viết yêu thích</Tab>
@@ -274,8 +364,8 @@ const ProfilePage = () => {
          </Box>
          <Modal
             blockScrollOnMount={false}
-            isOpen={isOpen}
-            onClose={onClose}
+            isOpen={modalEdit}
+            onClose={handleCloseModalEdit}
             closeOnOverlayClick={false}
          >
             <ModalOverlay />
@@ -417,7 +507,155 @@ const ProfilePage = () => {
                   >
                      Xác nhận
                   </Button>
-                  <Button variant="ghost" onClick={onClose}>
+                  <Button variant="ghost" onClick={handleCloseModalEdit}>
+                     Hủy bỏ
+                  </Button>
+               </ModalFooter>
+            </ModalContent>
+         </Modal>
+         <Modal
+            blockScrollOnMount={false}
+            isOpen={modalPassword}
+            onClose={handleCloseModalPassword}
+            closeOnOverlayClick={false}
+         >
+            <ModalOverlay />
+            <ModalContent>
+               <ModalHeader>
+                  <Text
+                     display={'flex'}
+                     justifyContent={'center'}
+                     color={"#f5897e"}
+                     py={'4'}
+                  >
+                     ĐỔI MẬT KHẨU
+                  </Text>
+
+               </ModalHeader>
+               <ModalCloseButton />
+               <ModalBody>
+                  <Formik
+                     initialValues={{
+                        oldPassword: '',
+                        newPassword: '',
+                     }}
+                     onSubmit={handleEditPasswordSubmit}
+                     validationSchema={Yup.object().shape({
+                        oldPassword: Yup.string()
+                           .required("Vui lòng nhập Mật khẩu hiện tại")
+                           .min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+                        newPassword: Yup.string()
+                           .required("Vui lòng nhập Mật khẩu mới")
+                           .min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+                     })
+                     }
+                  >
+                     {
+                        ({
+                           values,
+                           errors,
+                           touched,
+                           handleChange,
+                           handleBlur,
+                           handleSubmit,
+                           isSubmitting,
+                           setFieldValue,
+                        }) => (
+                           <Form id="editPassword">
+                              <Field name="oldPassword">
+                                 {({ field, form }) => (
+                                    <FormControl
+                                       isRequired
+                                       isInvalid={
+                                          form.errors.oldPassword && form.touched.oldPassword
+                                       }
+                                       mb={"4"}
+                                    >
+                                       <FormLabel>Mật khẩu hiện tại</FormLabel>
+                                       <InputGroup>
+                                          <Input
+                                             {...field}
+                                             type={!showOldPassword ? "password" : "text"}
+                                          />
+                                          <InputRightElement width={"4.5rem"}>
+                                             <IconButton
+                                                h={"1.75rem"}
+                                                aria-label="Hiển thị"
+                                                bg={"white"}
+                                                icon={
+                                                   showOldPassword ? (
+                                                      <ViewIcon />
+                                                   ) : (
+                                                      <ViewOffIcon />
+                                                   )
+                                                }
+                                                onClick={handleShowOldPassword}
+                                             />
+                                          </InputRightElement>
+                                       </InputGroup>
+
+                                       <FormErrorMessage>
+                                          {form.errors.oldPassword}
+                                       </FormErrorMessage>
+                                    </FormControl>
+                                 )}
+                              </Field>
+                              <Field name="newPassword">
+                                 {({ field, form }) => (
+                                    <FormControl
+                                       isRequired
+                                       isInvalid={
+                                          form.errors.newPassword && form.touched.newPassword
+                                       }
+                                       mb={"4"}
+                                    >
+                                       <FormLabel>Mật khẩu mới</FormLabel>
+                                       <InputGroup>
+                                          <Input
+                                             {...field}
+                                             type={!showNewPassword ? "password" : "text"}
+                                          />
+                                          <InputRightElement width={"4.5rem"}>
+                                             <IconButton
+                                                h={"1.75rem"}
+                                                aria-label="Hiển thị"
+                                                bg={"white"}
+                                                icon={
+                                                   showNewPassword ? (
+                                                      <ViewIcon />
+                                                   ) : (
+                                                      <ViewOffIcon />
+                                                   )
+                                                }
+                                                onClick={handleShowNewPassword}
+                                             />
+                                          </InputRightElement>
+                                       </InputGroup>
+
+                                       <FormErrorMessage>
+                                          {form.errors.newPassword}
+                                       </FormErrorMessage>
+                                    </FormControl>
+                                 )}
+                              </Field>
+                           </Form>
+                        )
+                     }
+                  </Formik>
+               </ModalBody>
+
+               <ModalFooter display={"flex"} justifyContent={"center"}>
+                  <Button
+                     type="submit"
+                     colorScheme="blue"
+                     mr={3}
+                     bg="#f5897e"
+                     _hover={{ bg: "#f56051" }}
+                     form="editPassword"
+                  >
+                     Xác nhận
+                  </Button>
+                  <Button variant="ghost" onClick={handleCloseModalPassword}>
                      Hủy bỏ
                   </Button>
                </ModalFooter>

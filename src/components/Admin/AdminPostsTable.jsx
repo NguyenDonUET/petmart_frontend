@@ -44,7 +44,7 @@ const AdminPostTable = ({ tableHeader, posts }) => {
   };
   return (
     <TableContainer>
-      <Table variant="simple" size={"lg"}>
+      <Table variant="simple" size={"sm"}>
         <Thead>
           <Tr>
             {tableHeader.map((title) => {

@@ -77,7 +77,11 @@ function RegisterPage() {
             "is number",
             "Vui lòng chỉ nhập số",
             (value) => !isNaN(parseInt(value))
-         ),
+         )
+         .matches(
+            /^(0[0-8][0-9]|09[0-6])[0-9]{1}[0-9]{2}[0-9]{6}$/,
+            "Vui lòng nhập số Căn Cước hợp lệ"
+          ),
       address: Yup.string().required("Vui lòng nhập Địa chỉ thường trú"),
       phone: Yup.string()
          .required("Vui lòng nhập Số điện thoại")

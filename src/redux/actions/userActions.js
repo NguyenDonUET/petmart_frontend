@@ -141,3 +141,34 @@ export const logout = () => async (dispatch) => {
   localStorage.removeItem("userInfo");
   dispatch(userLogout());
 };
+
+export const editPassword = (values) => async (dispatch, getState) => {
+  const {
+    user: { userInfo },
+  } = getState();
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.patch(
+      `${import.meta.env.VITE_BASE_URL}/api/users/${userInfo.user.id}/password`,
+      values,
+      config
+    );
+    console.log(data);
+  }
+  catch (error) {
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
+};
