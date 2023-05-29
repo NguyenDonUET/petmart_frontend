@@ -8,6 +8,8 @@ import {
   setUserList,
   setShowUserList,
   setIsApproveAccount,
+  setIsChangedPassword,
+  setErrorChangedPassword
 } from "../slices/user";
 
 export const login = (email, password) => async (dispatch) => {
@@ -158,11 +160,13 @@ export const editPassword = (values) => async (dispatch, getState) => {
       values,
       config
     );
-    console.log(data);
+    console.log("thay đổi mật khẩu");
+    dispatch(setIsChangedPassword(true));
   }
   catch (error) {
+    dispatch(setIsChangedPassword(false));
     dispatch(
-      setError(
+      setErrorChangedPassword(
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message

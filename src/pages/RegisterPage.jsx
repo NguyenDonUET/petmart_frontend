@@ -106,7 +106,15 @@ function RegisterPage() {
 
    return (
       <Flex justifyContent={"center"} alignItems={"center"}>
-         <Box width={"40%"} m={"3"}>
+         <Box 
+            className="RegisterBox"
+            w={{
+               base: '100%',
+               sm: '70%',
+               md: '500px',
+             }} 
+            m={"3"}
+         >
             <Heading
                color={"#f5897e"}
                as={"h1"}
@@ -230,10 +238,24 @@ function RegisterPage() {
                                     })
                                  }
                               >
-                                 <HStack spacing={"100px"}>
-                                    <Radio value="buyer">Người mua</Radio>
-                                    <Radio value="seller">Người bán</Radio>
-                                 </HStack>
+                                 <Box 
+                                    className="roleRadioButton"
+                                    display={{base: 'flex'}}
+                                    flexDirection={{base: 'column', md: 'row'}}
+                                 >
+                                    <Radio 
+                                    value="buyer"
+                                    >
+                                       Người mua
+                                    </Radio>
+                                    <Radio 
+                                       className="roleRadioButton__seller" 
+                                       value="seller"
+                                       ml={{md: '100px'}}
+                                    >
+                                       Người bán
+                                    </Radio>
+                                 </Box>
                               </RadioGroup>
                               <FormErrorMessage>
                                  {form.errors.role}

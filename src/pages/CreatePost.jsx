@@ -140,7 +140,17 @@ const CreatePost = () => {
   return (
     <Flex justifyContent={"center"}>
       {(userInfo && userInfo.user.role == 'seller' && userInfo.user.isApproved) ?
-        <Box width={"40%"} m={"3"}>
+        <Box
+          width={{
+            base: '100%',
+            sm: '70%',
+            md: '500px',
+          }}
+          m={{
+            base: '3',
+            md: '3'
+          }}
+        >
           <Heading
             color={"#f5897e"}
             as={"h1"}
@@ -336,10 +346,19 @@ const CreatePost = () => {
                           form.setValues({ ...form.values, gender: value })
                         }
                       >
-                        <Radio value="Đực">Giống đực</Radio>
-                        <Radio value="Cái" pl={"30%"}>
-                          Giống cái
-                        </Radio>
+                        <Box
+                          display={'flex'}
+                          flexDirection={{
+                            base: 'column',
+                            sm: 'column',
+                            md: 'row',
+                          }}
+                        >
+                          <Radio value="Đực">Giống đực</Radio>
+                          <Radio value="Cái" pl={{ md: "30%" }}>
+                            Giống cái
+                          </Radio>
+                        </Box>
                       </RadioGroup>
                       <FormErrorMessage>{form.errors.gender}</FormErrorMessage>
                     </FormControl>
@@ -461,10 +480,19 @@ const CreatePost = () => {
                           });
                         }}
                       >
-                        <Radio value={true}>Đã tiêm chủng</Radio>
-                        <Radio value={false} pl={"30%"}>
-                          Chưa tiêm chủng
-                        </Radio>
+                        <Box
+                          display={'flex'}
+                          flexDirection={{
+                            base: 'column',
+                            sm: 'column',
+                            md: 'row'
+                          }}
+                        >
+                          <Radio value={true}>Đã tiêm chủng</Radio>
+                          <Radio value={false} pl={{md: "30%"}}>
+                            Chưa tiêm chủng
+                          </Radio>
+                        </Box>
                       </RadioGroup>
                       <FormErrorMessage>
                         {form.errors.vaccination}
@@ -496,7 +524,10 @@ const CreatePost = () => {
 
                 <FormLabel>Địa chỉ hiển thị</FormLabel>
 
-                <Grid templateColumns={"repeat(3, 1fr)"} gap={4}>
+                <Grid 
+                  templateColumns={{lg: "repeat(3, 1fr)"}} 
+                  gap={{lg: '4'}}
+                >
                   <GridItem>
                     <Field name="province">
                       {({ field, form }) => (
@@ -605,7 +636,7 @@ const CreatePost = () => {
                       mb={"4"}
                     >
                       <FormLabel>Địa chỉ chi tiết</FormLabel>
-                      <Input
+                      <Textarea
                         {...field}
                         placeholder="Hãy ghi chi tiết về địa chỉ của bạn như : số nhà, đường, gần địa điểm lớn nào"
                       />

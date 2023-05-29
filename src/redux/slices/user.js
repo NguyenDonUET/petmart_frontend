@@ -6,7 +6,9 @@ export const initialState = {
    userInfo: JSON.parse(localStorage.getItem("userInfo")) ?? null,
    userList: null,
    showUserList: null,
-   isApproveAccount: false
+   isApproveAccount: false,
+   isChangedPassword: false,
+   errorChangedPassword: null,
 };
 
 export const userSlice = createSlice({
@@ -49,6 +51,12 @@ export const userSlice = createSlice({
          state.error = payload;
          state.loading = false;
       },
+      setIsChangedPassword : (state, { payload }) => {
+         state.isChangedPassword = payload;
+      },
+      setErrorChangedPassword: (state, { payload }) => {
+         state.errorChangedPassword = payload;
+      }
    },
 });
 
@@ -60,7 +68,9 @@ export const {
    userSignup,
    setUserList,
    setShowUserList,
-   setIsApproveAccount
+   setIsApproveAccount,
+   setIsChangedPassword,
+   setErrorChangedPassword,
 } = userSlice.actions;
 
 export default userSlice.reducer;

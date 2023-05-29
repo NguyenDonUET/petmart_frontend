@@ -48,6 +48,7 @@ import LoadingList from "../components/Admin/LoadingList";
 import SinglePost from "../components/Posts/SinglePost";
 import { editPassword, logout } from "../redux/actions/userActions";
 import { useNavigate } from "react-router-dom";
+import { setIsChangedPassword } from "../redux/slices/user";
 
 
 const mapApprove = {
@@ -71,7 +72,7 @@ const ProfilePage = () => {
    const user = useSelector((state) => state.user);
    const post = useSelector((state) => state.post);
    const { loading, createdPostList, favouritePostList } = post;
-   const { userInfo, error } = user;
+   const { userInfo, error, errorChangedPassword, isChangedPassword } = user;
    console.log(userInfo);
 
    // Modal
@@ -93,21 +94,33 @@ const ProfilePage = () => {
 
    // cập nhật danh sách post
    useEffect(() => {
+      dispatch(setIsChangedPassword(false));
       dispatch(getCreatedPosts(userInfo.user.id));
       dispatch(getFavouritePosts(userInfo.user.id));
    }, []);
 
    // hiển thị thông báo nếu có lỗi
    useEffect(() => {
-      if (error) {
+      console.log(isChangedPassword);
+      if (user.isChangedPassword) {
          toast({
-            description: error,
+            description: "Đổi mật khẩu thành công. Xin vui lòng đăng nhập lại.",
+            status: "success",
+            isClosable: true,
+            position: "top",
+         });
+         dispatch(logout());
+         navigate(`/`);
+      }
+      if (errorChangedPassword) {
+         toast({
+            description: errorChangedPassword,
             status: "error",
             isClosable: true,
             position: "top",
          });
       }
-   }, [error]);
+   }, [isChangedPassword]);
 
    // handleModal
    const handleOpenModalEdit = () => {
@@ -143,24 +156,15 @@ const ProfilePage = () => {
    const handleEditPasswordSubmit = (values) => {
       console.log(values);
       dispatch(editPassword(values));
-      if (!error) {
-         toast({
-            description: "Đổi mật khẩu thành công. Xin vui lòng đăng nhập lại.",
-            status: "success",
-            isClosable: true,
-            position: "top",
-         });
-         //navigate(`/`);
-         //dispatch(logout());
-      }
-      else {
-         toast({
-            description: error,
-            status: "error",
-            isClosable: true,
-            position: "top",
-         });
-      }
+      
+      // else {
+      //    toast({
+      //       description: error,
+      //       status: "error",
+      //       isClosable: true,
+      //       position: "top",
+      //    });
+      // }
 
    }
 
