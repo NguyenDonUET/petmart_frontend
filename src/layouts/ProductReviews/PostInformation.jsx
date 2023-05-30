@@ -28,18 +28,20 @@ const PostInformation = ({ postInfo }) => {
     district,
     province,
     description,
+    genre,
   } = postInfo;
   const place = `${address},  ${commune},  ${district},  ${province}`;
+  console.log("postInfo", postInfo);
   return (
     <Box my={"32px"}>
       <SubTitle>Thông tin chi tiết</SubTitle>
       <SimpleGrid columns={2} spacing={4}>
         <Text>
-          <Icon as={TfiRulerAlt} /> Cân nặng: {weight}
+          <Icon as={TfiRulerAlt} /> Cân nặng: {weight}kg
         </Text>
         <Text>
           <Icon as={SiSourceforge} mr={"4px"} />
-          Giống thú cưng: {gender}
+          Giống thú cưng: {genre}
         </Text>
         <Text>
           <Icon as={BsShieldPlus} mr={"4px"} />
