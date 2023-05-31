@@ -28,6 +28,7 @@ const AdminPostTable = ({ tableHeader, posts }) => {
   const dispatch = useDispatch();
   const toast = useToast();
   const { loading, error } = useSelector((state) => state.post);
+
   const verifyPost = (id) => {
     //  console.log("verify", id);
     dispatch(approveNewPost(id));
@@ -107,9 +108,9 @@ const AdminPostTable = ({ tableHeader, posts }) => {
                           onClick={() => verifyPost(id)}
                         />
                       </TooltipIcon>
-                      <TooltipIcon text={"Hủy xác thực"}>
+                      {/* <TooltipIcon text={"Hủy xác thực"}>
                         <CloseIcon boxSize={4} sx={styleIcon} />
-                      </TooltipIcon>
+                      </TooltipIcon> */}
                       <TooltipIcon text={"Chat"}>
                         <ChatIcon boxSize={5} sx={styleIcon} />
                       </TooltipIcon>

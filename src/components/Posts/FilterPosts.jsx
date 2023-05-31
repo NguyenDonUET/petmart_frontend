@@ -72,7 +72,6 @@ const FilterPosts = () => {
     let newParams = query.reduce((result, currentObj) => {
       return { ...result, ...currentObj };
     }, {});
-    // console.log(newParams);
     setSearchParams(newParams);
   };
 
@@ -99,7 +98,6 @@ const FilterPosts = () => {
 
   useEffect(() => {
     const filters = createFilterQuery(decodeParams(search));
-    // console.log(filters);
     dispatch(setFilterParams(filters));
     dispatch(getPosts());
   }, []);

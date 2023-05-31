@@ -35,7 +35,7 @@ const ChatUserList = () => {
 
   useEffect(() => {
     if (chatList) {
-      console.log("🚀 ~ chatList:", chatList);
+      // console.log("🚀 ~  chatList:", chatList);
       setChatUsers(chatList);
     }
   }, [chatList]);
@@ -44,7 +44,6 @@ const ChatUserList = () => {
     <Flex
       gap={4}
       flexDirection={"column"}
-      //   overflowY={"scroll"}
       overflow={"auto"}
       flexGrow={1}
       sx={styleScroll}

@@ -5,10 +5,13 @@ import {
   setCreatedPostList,
   setCreator,
   setError,
+  setErrorApprovePost,
   setFavouritePostList,
+  setIsApprovedPost,
   setIsLike,
   setIsReview,
   setLoading,
+  setLoadingApprovePost,
   setPostForNotification,
   setPostList,
   setPostsCount,
@@ -471,6 +474,7 @@ export const approveNewPost = (id) => async (dispatch, getState) => {
   const {
     user: { userInfo },
   } = getState();
+  dispatch(setLoadingApprovePost(true));
   try {
     const config = {
       headers: {
@@ -483,10 +487,12 @@ export const approveNewPost = (id) => async (dispatch, getState) => {
       {},
       config
     );
+    dispatch(setIsApprovedPost(true));
+    dispatch(setErrorApprovePost(null));
     console.log("🚀 ~ xác thực bài đăng:", data);
   } catch (error) {
     dispatch(
-      setError(
+      setErrorApprovePost(
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message
@@ -494,7 +500,6 @@ export const approveNewPost = (id) => async (dispatch, getState) => {
           : "An unexpected error has occured. Please try again later."
       )
     );
-    dispatch(setIsApproveAccount(false));
   }
 };
 

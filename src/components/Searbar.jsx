@@ -17,10 +17,10 @@ const Searbar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
 
-  const handleSearch = () => {
-    setSearchParams({ q: searchVal });
-    dispatch(filterPosts(`q=${searchVal}`));
-  };
+  // const handleSearch = () => {
+  //   setSearchParams({ q: searchVal });
+  //   dispatch(filterPosts(`q=${searchVal}`));
+  // };
 
   return (
     <HStack>
@@ -33,13 +33,13 @@ const Searbar = () => {
         border={"none"}
         onChange={(e) => setSearchVal(e.target.value)}
       ></Input>
-      <IconButton
+      {/* <IconButton
         colorScheme="blue"
         variant={"ghost"}
         aria-label="Search database"
         icon={<SearchIcon />}
         onClick={handleSearch}
-      />
+      /> */}
       {/* <Button colorScheme="teal">Tìm kiếm</Button> */}
     </HStack>
   );

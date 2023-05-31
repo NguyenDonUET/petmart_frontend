@@ -7,9 +7,9 @@ import { useSelector } from "react-redux";
 
 const RootLayout = () => {
   const { isStartChat } = useSelector((state) => state.chat);
-  useEffect(() => {
-    console.log("🚀 ~ isStartChat:", isStartChat);
-  }, [isStartChat]);
+  // useEffect(() => {
+  //   console.log("🚀 ~ isStartChat:", isStartChat);
+  // }, [isStartChat]);
   return (
     <Grid minHeight={"100vh"} templateRows={"auto 1fr auto"}>
       <Header />

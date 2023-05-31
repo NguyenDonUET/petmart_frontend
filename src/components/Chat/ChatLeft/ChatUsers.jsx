@@ -13,7 +13,7 @@ const ChatUsers = () => {
     >
       <Flex flexDirection={"column"} gap={6} height={"100%"}>
         <Heading fontSize={"24px"}>Chats</Heading>
-        <ChatUserSearch />
+        {/* <ChatUserSearch /> */}
         <ChatUserList />
       </Flex>
     </Box>

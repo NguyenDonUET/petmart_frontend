@@ -66,7 +66,7 @@ const Account = () => {
   const logoutHandler = () => {
     dispatch(logout());
     toast({
-      description: "Bạn đã đăng xuất thành công",
+      description: "Đăng xuất thành công",
       status: "success",
       isClosable: true,
       position: "top",

@@ -21,6 +21,9 @@ export const initialState = {
   reviews: [],
   showReviewList: [],
   countRating: [],
+  isApprovedPost: false,
+  loadingApprovePost: false,
+  errorApprovePost: null,
 };
 
 export const postSlice = createSlice({
@@ -117,6 +120,17 @@ export const postSlice = createSlice({
     setShowReviewList: (state, { payload }) => {
       state.showReviewList = payload;
     },
+    setIsApprovedPost: (state, { payload }) => {
+      state.isApprovedPost = payload;
+      state.loadingApprovePost = false;
+    },
+    setLoadingApprovePost: (state, { payload }) => {
+      state.loadingApprovePost = payload;
+    },
+    setErrorApprovePost: (state, { payload }) => {
+      state.errorApprovePost = payload;
+      state.loadingApprovePost = false;
+    },
   },
 });
 
@@ -141,6 +155,9 @@ export const {
   setUpdateLoading,
   setCountRating,
   setShowReviewList,
+  setIsApprovedPost,
+  setErrorApprovePost,
+  setLoadingApprovePost,
 } = postSlice.actions;
 
 export default postSlice.reducer;

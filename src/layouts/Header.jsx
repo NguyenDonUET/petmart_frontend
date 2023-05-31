@@ -16,9 +16,6 @@ import { userLogout } from "../redux/slices/user";
 const Header = () => {
   const user = useSelector((state) => state.user);
   const { userInfo } = user;
-  if (userInfo) {
-    // console.log(userInfo);
-  }
   return (
     <Box as={"header"}>
       <Container maxW={"container.xl"}>
@@ -47,7 +44,6 @@ const Header = () => {
             {userInfo && (
               <>
                 <MenuOptions />
-                {/* <Spacer /> */}
               </>
             )}
             <Account />

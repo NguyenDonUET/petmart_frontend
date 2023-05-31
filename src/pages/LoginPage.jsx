@@ -34,7 +34,6 @@ const LoginPage = () => {
   // Hook để lấy thông tin về địa chỉ URL hiện tại
   const location = useLocation();
   const dispatch = useDispatch();
-  const redirect = "/";
   const toast = useToast();
 
   const user = useSelector((state) => state.user);
@@ -59,35 +58,32 @@ const LoginPage = () => {
     dispatch(login(email, password));
   };
 
+  // useEffect(() => {
+  //   if (!userInfo) return;
+  //   // if (isTokenExpired(userInfo.accessToken)) {
+  //   //   toast({
+  //   //     title: "Session expired",
+  //   //     description: "Please log in again to continue.",
+  //   //     status: "error",
+  //   //     duration: 5000,
+  //   //     isClosable: true,
+  //   //   });
+  //   //   localStorage.clear();
+  //   // }
+  // }, [userInfo, error, navigate, location.state, toast]);
+
   useEffect(() => {
-    if (!userInfo) return;
-    // Nếu user đã đăng nhập thành công
-    if (!isTokenExpired(userInfo.accessToken)) {
-      // Điều hướng tới trang trước đó(nếu trc đó đang checkout thì quay lại trang đó)
-      if (location.state?.from) {
-        navigate(location.state.from);
-      } else {
-        // Điều hướng tới trang chủ
-        navigate(redirect);
-      }
+    if (userInfo) {
+      console.log("userInfo", userInfo);
       toast({
-        description: "Bạn đã đăng nhập thành công.",
+        description: "Đăng nhập thành công.",
         status: "success",
         isClosable: true,
         position: "top",
       });
+      navigate("/");
     }
-    if (isTokenExpired(userInfo.accessToken)) {
-      toast({
-        title: "Session expired",
-        description: "Please log in again to continue.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-      localStorage.clear();
-    }
-  }, [userInfo, redirect, error, navigate, location.state, toast]);
+  }, [userInfo]);
 
   return (
     <Flex justifyContent={"center"} alignItems={"center"}>

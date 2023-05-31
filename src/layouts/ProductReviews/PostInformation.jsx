@@ -31,7 +31,6 @@ const PostInformation = ({ postInfo }) => {
     genre,
   } = postInfo;
   const place = `${address},  ${commune},  ${district},  ${province}`;
-  console.log("postInfo", postInfo);
   return (
     <Box my={"32px"}>
       <SubTitle>Thông tin chi tiết</SubTitle>

@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 const ChatHeader = () => {
   const [userName, setUserName] = useState("");
   const { userId } = useParams();
-  const { chatList } = useSelector((state) => state.chat);
+  const { chatList, chatMessages } = useSelector((state) => state.chat);
 
   useEffect(() => {
     if (chatList) {
@@ -29,7 +29,7 @@ const ChatHeader = () => {
         setUserName(selectedUser.username);
       }
     }
-  }, [chatList]);
+  }, [chatList, chatMessages]);
 
   return (
     <Box

@@ -10,6 +10,9 @@ import {
   setIsApproveAccount,
   setUpdateLoading,
   setUpdateError,
+  setIsUpdated,
+  setUserInfo,
+  setIsChangedPassword,
 } from "../slices/user";
 
 export const login = (email, password) => async (dispatch) => {
@@ -144,7 +147,30 @@ export const logout = () => async (dispatch) => {
   dispatch(userLogout());
 };
 
-export const updateProfile = (newInfo) => async (dispatch, getState) => {
+export const getUserInfoById = (userId) => async (dispatch, getState) => {
+  const {
+    user: { userInfo },
+  } = getState();
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/users/${userId}`,
+      {},
+      config
+    );
+    console.log("lấy info 1 user", data);
+    dispatch(setUserInfo(data));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateUserInfo = (newInfo) => async (dispatch, getState) => {
+  dispatch(setIsUpdated(false));
   dispatch(setUpdateLoading(true));
   const {
     user: { userInfo },
@@ -166,7 +192,45 @@ export const updateProfile = (newInfo) => async (dispatch, getState) => {
     );
     console.log("🚀 ~ update profile user:", data);
     dispatch(setUpdateLoading(false));
+    dispatch(setIsUpdated(true));
   } catch (error) {
+    dispatch(
+      setUpdateError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
+};
+
+export const editPassword = (values) => async (dispatch, getState) => {
+  const {
+    user: { userInfo },
+  } = getState();
+  dispatch(setIsChangedPassword(false));
+  dispatch(setIsUpdated(false));
+  dispatch(setUpdateLoading(true));
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.patch(
+      `${import.meta.env.VITE_BASE_URL}/api/users/${userInfo.user.id}/password`,
+      values,
+      config
+    );
+    console.log("🚀 ~ thay đổi mật khẩu:", data);
+    dispatch(setIsChangedPassword(true));
+    dispatch(setUpdateLoading(false));
+    dispatch(setIsUpdated(true));
+  } catch (error) {
+    console.log(error);
     dispatch(
       setUpdateError(
         error.response && error.response.data.message

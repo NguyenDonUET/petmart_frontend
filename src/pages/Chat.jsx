@@ -25,10 +25,6 @@ function Chat() {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("isOpenChat", isOpenChat);
-  }, [isOpenChat]);
-
   return (
     <Box height={"100vh"} borderTop={"2px solid #f5897e"}>
       <Flex height={"100%"}>

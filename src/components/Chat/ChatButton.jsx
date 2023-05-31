@@ -9,6 +9,7 @@ const ChatButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const openChat = () => {
     dispatch(setIsStartChat(true));
     dispatch(setIsOpenChat(false));
@@ -16,7 +17,7 @@ const ChatButton = () => {
     setIsOpen(!isOpen);
   };
   return (
-    <Tooltip label="Trò chuyện" bg="pink.400">
+    <Tooltip label="Trò chuyện">
       <Button
         colorScheme="gray"
         borderRadius={"50%"}

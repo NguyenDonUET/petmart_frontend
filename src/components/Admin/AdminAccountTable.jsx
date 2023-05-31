@@ -67,9 +67,9 @@ const AdminAccountTable = ({ tableHeader, data }) => {
                           onClick={() => dispatch(approveUserAccount(user.id))}
                         />
                       </TooltipIcon>
-                      <TooltipIcon text={"Hủy xác thực"}>
+                      {/* <TooltipIcon text={"Hủy xác thực"}>
                         <CloseIcon boxSize={4} sx={styleIcon} />
-                      </TooltipIcon>
+                      </TooltipIcon> */}
                       <TooltipIcon text={"Chat"}>
                         <ChatIcon boxSize={5} sx={styleIcon} />
                       </TooltipIcon>

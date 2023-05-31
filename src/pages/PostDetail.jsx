@@ -59,7 +59,7 @@ const PostDetail = () => {
 
   const dispatch = useDispatch();
   const post = useSelector((state) => state.post);
-  const { loading, error, singlePost } = post;
+  const { loading, error, singlePost, reviews, countRating } = post;
   const user = useSelector((state) => state.user);
   const { userInfo } = user;
   const navigate = useNavigate();
@@ -172,11 +172,7 @@ const PostDetail = () => {
                     width={"1px"}
                     bgColor={"gray.500"}
                   />
-                  <Text>
-                    {numOfcomment > 1
-                      ? `${numOfcomment} comments`
-                      : `${numOfcomment} comment`}
-                  </Text>
+                  <Text>{`${reviews.length} đánh giá`}</Text>
                 </Flex>
                 <Spacer />
                 {/* Yêu thích bài đăng */}
@@ -190,6 +186,9 @@ const PostDetail = () => {
                   bgColor={"green"}
                   color={"white"}
                   _hover={{ backgroundColor: "green.400" }}
+                  onClick={() => {
+                    navigate(`/chat/${creator.id}`);
+                  }}
                 >
                   Liên hệ với người bán
                 </Button>

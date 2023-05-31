@@ -29,6 +29,7 @@ const ChatSingleUser = ({ user }) => {
     dispatch(setIsOpenChat(true));
     dispatch(getChatMessages(user.id));
   };
+
   return (
     <NavLink
       to={`${user.id}`}

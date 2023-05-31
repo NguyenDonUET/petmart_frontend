@@ -22,7 +22,7 @@ export const getChatUsers = (idChatUser) => async (dispatch, getState) => {
       `${import.meta.env.VITE_BASE_URL}/api/users/chatUsers/${id}`,
       body
     );
-    console.log("🚀 ~ danh sach user:", data);
+    // console.log("🚀 ~ danh sach user:", data);
     dispatch(setChatList(data));
   } catch (error) {
     dispatch(
