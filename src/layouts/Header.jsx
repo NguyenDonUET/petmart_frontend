@@ -16,6 +16,7 @@ import { userLogout } from "../redux/slices/user";
 const Header = () => {
   const user = useSelector((state) => state.user);
   const { userInfo } = user;
+
   return (
     <Box as={"header"}>
       <Container maxW={"container.xl"}>
@@ -30,7 +31,7 @@ const Header = () => {
           <Box _hover={{ cursor: "pointer" }}>
             <Link to={"/"}>
               <Image
-                src={"./images/logo-pethub.jpg"}
+                src={"/images/logo-pethub.jpg"}
                 height={"48px"}
                 width={"120px"}
                 objectFit={"cover"}
