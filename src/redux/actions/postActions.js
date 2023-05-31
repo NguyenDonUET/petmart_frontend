@@ -176,10 +176,12 @@ export const getPostById = (id) => async (dispatch) => {
       `${import.meta.env.VITE_BASE_URL}/api/posts/${id}`,
       config
     );
+    dispatch(setLoading(false));
     dispatch(setSinglePost(data));
     dispatch(setCreator(data.creator));
     console.log("lấy 1 bai dang");
   } catch (error) {
+    dispatch(setLoading(false));
     console.log("Lỗi khi lấy 1 bài đăng");
     dispatch(
       setError(
@@ -487,12 +489,19 @@ export const approveNewPost = (id) => async (dispatch, getState) => {
       {},
       config
     );
+    // setTimeout(() => {
+    //   dispatch(setLoadingApprovePost(false));
+    //   dispatch(setIsApprovedPost(true));
+    //   // dispatch(setErrorApprovePost(null));
+    // }, 2000);
+    dispatch(setLoadingApprovePost(false));
     dispatch(setIsApprovedPost(true));
-    dispatch(setErrorApprovePost(null));
     console.log("🚀 ~ xác thực bài đăng:", data);
   } catch (error) {
+    console.log("🚀 ~ error:", error);
+    dispatch(setLoadingApprovePost(false));
     dispatch(
-      setErrorApprovePost(
+      setError(
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message

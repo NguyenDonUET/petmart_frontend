@@ -22,12 +22,19 @@ import numberWithCommas from "../../utils/numberWithCommas";
 import LoadingList from "./LoadingList";
 import PostImages from "../PostDetail/PostImages";
 import RatingSystem from "../Rating/RatingSystem";
+import { setError, setIsApprovedPost } from "../../redux/slices/post";
 
 const AdminPostDetail = () => {
   const [postInfo, setPostInfo] = useState(null);
-  const { singlePost, creator, error, loading } = useSelector(
-    (state) => state.post
-  );
+  const [isApproved, setIsApproved] = useState(false);
+  const {
+    singlePost,
+    creator,
+    error,
+    loading,
+    loadingApprovePost,
+    isApprovedPost,
+  } = useSelector((state) => state.post);
   const params = useParams();
   const toast = useToast();
   const dispatch = useDispatch();
@@ -37,6 +44,7 @@ const AdminPostDetail = () => {
     }
   }, []);
 
+  // Hiện thông báo khi success hoặc gặp lỗi
   useEffect(() => {
     if (error) {
       toast({
@@ -45,36 +53,38 @@ const AdminPostDetail = () => {
         isClosable: true,
         position: "top",
       });
+      dispatch(setError(null));
+      setIsApproved(false);
     }
-    if (!error && !loading) {
-      console.log(singlePost);
 
-      // setCreator(singlePost.creator);
-    }
-  }, [error, loading]);
-  useEffect(() => {
-    // console.log(singlePost);
-    if (singlePost) {
-      setPostInfo(singlePost.post);
-    }
-  }, [singlePost]);
-
-  const handleClick = () => {
-    dispatch(approveNewPost(params.id));
-    if (!error) {
+    if (isApprovedPost) {
       toast({
         description: "Duyệt bài thành công",
         status: "success",
         isClosable: true,
         position: "top",
       });
-      dispatch(getPostById(params.id));
+      dispatch(setIsApprovedPost(false));
     }
+  }, [error, isApprovedPost]);
+  useEffect(() => {
+    if (singlePost) {
+      // console.log("🚀 ~ singlePost:", singlePost);
+      setIsApproved(singlePost.post.isApproved);
+      setPostInfo(singlePost.post);
+    }
+  }, [singlePost]);
+
+  // Xư lý khi duyệt bài
+  const handleClick = () => {
+    setIsApproved(true);
+    dispatch(approveNewPost(params.id));
   };
+
   return (
     <>
       {loading && <LoadingList />}
-      {!loading && !error && postInfo && (
+      {!loading && postInfo && (
         <Box width={"80%"} mx={"auto"} padding={8} my={"32px"}>
           <Flex gap={8}>
             <PostImages images={postInfo.images} />
@@ -84,15 +94,16 @@ const AdminPostDetail = () => {
                   {postInfo.title}
                 </Heading>
                 <Button
-                  isDisabled={postInfo.isApproved}
+                  isDisabled={isApproved}
                   backgroundColor={"blue.500"}
                   color={"#fff"}
                   _hover={{
                     backgroundColor: "blue.200",
                   }}
+                  isLoading={loadingApprovePost}
                   onClick={() => handleClick()}
                 >
-                  {postInfo.isApproved ? "Đã duyệt bài" : "Duyệt bài"}
+                  {isApproved ? "Đã duyệt bài" : "Duyệt bài"}
                 </Button>
               </Flex>
               <Flex padding={"12px"} alignItems={"center"}>
