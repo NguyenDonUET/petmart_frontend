@@ -23,6 +23,7 @@ import {
   NumberDecrementStepper,
   Textarea,
   FormHelperText,
+  useToast,
 } from "@chakra-ui/react";
 import {
   Modal,
@@ -46,8 +47,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import FilesDropzone from "../components/Posts/FilesDropzone";
-import { getPostById } from "../redux/actions/postActions";
 import { speciesGenre } from "./gen";
+import { editPost, getPostById } from "../redux/actions/postActions";
+import { setUpdateLoading } from "../redux/slices/post";
 
 const UpdatePost = () => {
   const [province, setProvince] = useState([]);
@@ -57,7 +59,9 @@ const UpdatePost = () => {
   const [files, setFiles] = useState([]);
   const [endDatee, setEndDatee] = useState(moment().add(7, "days").toDate());
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
+  const { id: postId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // lấy post
@@ -71,7 +75,7 @@ const UpdatePost = () => {
 
   // tạo các đối tượng
   const { userInfo } = user;
-  const { loading, error, singlePost } = post;
+  const { loading, error, singlePost, updateLoading, updateError } = post;
 
   useEffect(() => {
     // load tên tỉnh thành vào province
@@ -102,7 +106,7 @@ const UpdatePost = () => {
               return prevFiles.concat(file);
             });
           })
-          console.log(defaultFiles);
+        console.log(defaultFiles);
       }
     }
   }, []);
@@ -198,12 +202,13 @@ const UpdatePost = () => {
     setGenre(result.Genre);
   }
 
+
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Vui lòng nhập tiêu đề cho bài viết"),
     species: Yup.string()
       .required("Vui lòng chọn trường này")
       .oneOf(
-        ["Chó", "Mèo", "Chuột Hamster", "Khác"],
+        ["Chó", "Mèo", "Chim", "Gà", "Chuột Hamster", "Khác"],
         "Vui lòng chọn trường này"
       ),
     gender: Yup.string()
@@ -232,7 +237,30 @@ const UpdatePost = () => {
       .min(3, "Upload tối thiểu 3 ảnh, vui lòng tải lại tối thiểu 3 ảnh")
       .required("Vui lòng đăng ảnh minh họa"),
   });
-  //   return <div>Hello</div>;
+
+  const handleSubmit = (values) => {
+    dispatch(editPost(postId, values));
+    if (!updateLoading) {
+      toast({
+        description: "Sửa bài thành công",
+        status: "success",
+        position: "top",
+        isClosable: true,
+      });
+    }
+    navigate(`/posts/${postId}`);
+  };
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        description: error,
+        status: "error",
+        position: "top",
+        isClosable: true,
+      });
+    }
+  }, [updateError, updateLoading]);
 
   return (
     <>
@@ -240,7 +268,14 @@ const UpdatePost = () => {
       {error && <Text>{error}</Text>}
       {!loading && postInfo && (
         <Flex justifyContent={"center"}>
-          <Box width={"40%"} m={"3"}>
+          <Box
+            w={{
+              base: '100%',
+              sm: '70%',
+              md: '500px',
+            }}
+            m={"3"}
+          >
             <Heading
               color={"#f5897e"}
               as={"h1"}
@@ -274,7 +309,7 @@ const UpdatePost = () => {
                 values,
                 { setErrors, setStatus, setSubmitting }
               ) => {
-                console.log(values);
+                handleSubmit(values);
               }}
               validationSchema={validationSchema}
             >
@@ -418,10 +453,19 @@ const UpdatePost = () => {
                             form.setValues({ ...form.values, gender: value })
                           }
                         >
-                          <Radio value="Đực">Giống đực</Radio>
-                          <Radio value="Cái" pl={"30%"}>
-                            Giống cái
-                          </Radio>
+                          <Box
+                            display={'flex'}
+                            flexDirection={{
+                              base: 'column',
+                              sm: 'column',
+                              md: 'row',
+                            }}
+                          >
+                            <Radio value="Đực">Giống đực</Radio>
+                            <Radio value="Cái" pl={{ md: "30%" }}>
+                              Giống cái
+                            </Radio>
+                          </Box>
                         </RadioGroup>
                         <FormErrorMessage>
                           {form.errors.gender}
@@ -560,10 +604,19 @@ const UpdatePost = () => {
                             });
                           }}
                         >
-                          <Radio value={true}>Đã tiêm chủng</Radio>
-                          <Radio value={false} pl={"30%"}>
-                            Chưa tiêm chủng
-                          </Radio>
+                          <Box
+                            display={'flex'}
+                            flexDirection={{
+                              base: 'column',
+                              sm: 'column',
+                              md: 'row'
+                            }}
+                          >
+                            <Radio value={true}>Đã tiêm chủng</Radio>
+                            <Radio value={false} pl={{ md: "30%" }}>
+                              Chưa tiêm chủng
+                            </Radio>
+                          </Box>
                         </RadioGroup>
                         <FormErrorMessage>
                           {form.errors.vaccination}
@@ -596,7 +649,10 @@ const UpdatePost = () => {
 
                   <FormLabel>Địa chỉ hiển thị</FormLabel>
 
-                  <Grid templateColumns={"repeat(3, 1fr)"} gap={4}>
+                  <Grid
+                    templateColumns={{ lg: "repeat(3, 1fr)" }}
+                    gap={{ lg: '4' }}
+                  >
                     <GridItem>
                       <Field name="province">
                         {({ field, form }) => (
@@ -808,6 +864,7 @@ const UpdatePost = () => {
 
                       <ModalFooter display={"flex"} justifyContent={"center"}>
                         <Button
+                          isLoading={updateLoading}
                           type="submit"
                           colorScheme="blue"
                           mr={3}
@@ -833,5 +890,4 @@ const UpdatePost = () => {
     </>
   );
 };
-
 export default UpdatePost;

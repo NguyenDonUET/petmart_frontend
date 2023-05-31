@@ -3,14 +3,15 @@ import React, { useState } from "react";
 import { BsChatText } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setIsStartChat } from "../../redux/slices/chat";
+import { setIsOpenChat, setIsStartChat } from "../../redux/slices/chat";
 
 const ChatButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const openChat = () => {
-    dispatch(setIsStartChat(false));
+    dispatch(setIsStartChat(true));
+    dispatch(setIsOpenChat(false));
     navigate("/chat");
     setIsOpen(!isOpen);
   };

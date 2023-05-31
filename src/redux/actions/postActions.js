@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
   setAdminPostList,
+  setCountRating,
   setCreatedPostList,
   setCreator,
   setError,
@@ -14,7 +15,10 @@ import {
   setReviews,
   setShowAdminPostList,
   setShowPostList,
+  setShowReviewList,
   setSinglePost,
+  setUpdateError,
+  setUpdateLoading,
 } from "../slices/post";
 import { checkPostId } from "../../utils/checkPostId";
 
@@ -334,8 +338,15 @@ export const getReviews = () => async (dispatch, getState) => {
       config
     );
     const { reviews } = data;
+    const countRating = [0, 0, 0, 0, 0, 0];
+    reviews.forEach((review) => {
+      countRating[review.rating]++;
+    });
+    countRating[0] = reviews.length;
+    dispatch(setCountRating(countRating));
     dispatch(setReviews(reviews));
-    console.log("lấy ds danh gia");
+
+    dispatch(setShowReviewList(reviews));
   } catch (error) {
     console.log("Lỗi khi lấy danh sách đánh giá");
     dispatch(
@@ -455,6 +466,7 @@ export const reviewPost = (newRating) => async (dispatch, getState) => {
   }
 };
 
+// Xác thực bài đăng
 export const approveNewPost = (id) => async (dispatch, getState) => {
   const {
     user: { userInfo },
@@ -471,8 +483,7 @@ export const approveNewPost = (id) => async (dispatch, getState) => {
       {},
       config
     );
-    // console.log(data);
-    console.log("xác thực bài đăng");
+    console.log("🚀 ~ xác thực bài đăng:", data);
   } catch (error) {
     dispatch(
       setError(
@@ -484,5 +495,39 @@ export const approveNewPost = (id) => async (dispatch, getState) => {
       )
     );
     dispatch(setIsApproveAccount(false));
+  }
+};
+
+// Sửa bài đăng
+export const editPost = (postId, newPost) => async (dispatch, getState) => {
+  dispatch(setUpdateLoading(true));
+  const {
+    user: { userInfo },
+  } = getState();
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.put(
+      `${import.meta.env.VITE_BASE_URL}/api/posts/${postId}/edit`,
+      newPost,
+      config
+    );
+    dispatch(setUpdateLoading(false));
+    console.log("🚀 ~ sửa bài đăng:", data);
+  } catch (error) {
+    dispatch(setUpdateLoading(false));
+    dispatch(
+      setUpdateError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
   }
 };

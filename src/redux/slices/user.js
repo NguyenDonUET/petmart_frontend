@@ -7,6 +7,8 @@ export const initialState = {
    userList: null,
    showUserList: null,
    isApproveAccount: false,
+   updateLoading: false,
+   updateError: false,
    isChangedPassword: false,
    errorChangedPassword: null,
 };
@@ -15,9 +17,13 @@ export const userSlice = createSlice({
    name: "user",
    initialState,
    reducers: {
-      setLoading: (state) => {
-         state.loading = true;
+      setLoading: (state, { payload }) => {
+         state.loading = payload;
       },
+      setUpdateError: (state, { payload }) => {
+         state.updateError = payload;
+         state.updateLoading = false;
+       },
       userLogin: (state, { payload }) => {
          state.userInfo = payload;
          state.error = null;
@@ -71,6 +77,8 @@ export const {
    setIsApproveAccount,
    setIsChangedPassword,
    setErrorChangedPassword,
+   setUpdateError,
+   setUpdateLoading,
 } = userSlice.actions;
 
 export default userSlice.reducer;

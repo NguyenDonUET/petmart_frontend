@@ -12,7 +12,7 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./ChatSingleUser.css";
 import { useDispatch } from "react-redux";
-import { setIsStartChat } from "../../../redux/slices/chat";
+import { setIsOpenChat, setIsStartChat } from "../../../redux/slices/chat";
 import { getChatMessages } from "../../../redux/actions/chatAction";
 
 const roleMap = {
@@ -21,12 +21,12 @@ const roleMap = {
   buyer: "người mua",
 };
 
-const ChatSingleUser = ({ user, lastMess }) => {
+const ChatSingleUser = ({ user }) => {
   const styleActive = ({ isActive }) => (isActive ? "active" : "");
   const dispatch = useDispatch();
 
   const startChat = () => {
-    dispatch(setIsStartChat(true));
+    dispatch(setIsOpenChat(true));
     dispatch(getChatMessages(user.id));
   };
   return (
@@ -47,11 +47,17 @@ const ChatSingleUser = ({ user, lastMess }) => {
         // justifyContent={"center"}
       >
         <Tooltip label={user.username}>
-          <Avatar src="https://bit.ly/broken-link" />
+          <Avatar />
         </Tooltip>
         <Flex flexDirection={"column"} display={{ base: "none", sm: "flex" }}>
-          <Heading fontSize={"md"}>{user.username}</Heading>
-          <Text>{lastMess}</Text>
+          <Heading fontSize={"lg"} fontWeight={"500"}>
+            {user.username}
+          </Heading>
+          <Text>
+            {user.lastMess && user.lastMess.length >= 30
+              ? user.lastMess.substr(0, 29) + "..."
+              : user.lastMess}
+          </Text>
         </Flex>
       </Flex>
     </NavLink>

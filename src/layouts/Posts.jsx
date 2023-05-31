@@ -11,7 +11,7 @@ const Posts = () => {
         textAlign={"center"}
         color={"#453227"}
         mb={"34px"}
-        fontStyle={"italic"}
+        //fontStyle={"italic"}
       >
         Danh sách bài đăng
       </Heading>

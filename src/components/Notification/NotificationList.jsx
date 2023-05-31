@@ -1,35 +1,16 @@
-import {
-  Button,
-  HStack,
-  List,
-  ListItem,
-  Stack,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react";
+import { List, Text, useDisclosure } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   getNotifications,
   seenNotification,
 } from "../../redux/actions/notificationActions";
-import NotificationItem from "./NotificationItem";
 import { getPostById, getPostForNotifi } from "../../redux/actions/postActions";
-import { EmailIcon, Icon } from "@chakra-ui/icons";
-import { useEffect, useState } from "react";
+import NotificationItem from "./NotificationItem";
 import NotificationModal from "./NotificationModal";
-import { setSinglePost } from "../../redux/slices/post";
 
-function NotificationList() {
+function NotificationList({ closeList }) {
   const [extendDate, setExtendDate] = useState("");
   const [post, setPost] = useState(null);
   const navigate = useNavigate();
@@ -62,12 +43,31 @@ function NotificationList() {
       } else {
         navigate(`/posts/${postId}`);
       }
+      closeList();
     }
     if (!seen) {
       dispatch(seenNotification(notiId));
       dispatch(getNotifications());
     }
   };
+
+  // add event click outside list and button noification button
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        !e.target.matches(".notification *") &&
+        !e.target.matches(".notifi-button") &&
+        !e.target.matches(".notifi-icon")
+      ) {
+        closeList();
+      }
+    };
+
+    window.addEventListener("click", handleClickOutside);
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   return (
     <List spacing={3} padding={"8px"}>

@@ -99,7 +99,7 @@ const AdminPostDetail = () => {
                 <Flex height={"32px"} gap="10px" alignItems={"center"}>
                   <Flex>
                     <Text mr={"4px"} color={"pink.500"}>
-                      {postInfo.star && postInfo.star.toString()}
+                      {postInfo.star && postInfo.star.toFixed(2).toString()}
                     </Text>
                     <RatingSystem rating={postInfo.star} />
                   </Flex>

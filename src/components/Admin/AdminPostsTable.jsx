@@ -11,13 +11,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
+import { useDispatch, useSelector } from "react-redux";
+import AlertStatus from "./AlertStatus";
 import TooltipIcon from "./TooltipIcon";
 import UserAccount from "./UserAccount";
-import AlertStatus from "./AlertStatus";
-import { useDispatch, useSelector } from "react-redux";
 
-import { useEffect } from "react";
-import { setLoading } from "../../redux/slices/user";
 import { approveNewPost, getAllPosts } from "../../redux/actions/postActions";
 
 const styleIcon = {

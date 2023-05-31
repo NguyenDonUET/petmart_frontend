@@ -5,7 +5,8 @@ export const initialState = {
   error: null,
   chatList: null,
   chatMessages: null,
-  isStartChat: false,
+  isStartChat: false, // Khi vào trang Chat
+  isOpenChat: false, // Hiện lời chào khi chưa chat với ai hết
 };
 
 export const chatSlice = createSlice({
@@ -17,6 +18,9 @@ export const chatSlice = createSlice({
     },
     setIsStartChat: (state, { payload }) => {
       state.isStartChat = payload;
+    },
+    setIsOpenChat: (state, { payload }) => {
+      state.isOpenChat = payload;
     },
     setChatList: (state, { payload }) => {
       state.chatList = payload;
@@ -42,6 +46,7 @@ export const {
   setChatList,
   setChatMessages,
   setIsStartChat,
+  setIsOpenChat,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

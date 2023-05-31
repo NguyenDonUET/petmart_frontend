@@ -6,7 +6,7 @@ const SubTitle = ({ children }) => {
       <Heading
          bgColor={"gray.50"}
          padding={3}
-         fontSize={"24px"}
+         fontSize={{base: "20px", sm: "24px"}}
          as={"h3"}
          my={6}
          color={"rgba(0,0,0,.80)"}

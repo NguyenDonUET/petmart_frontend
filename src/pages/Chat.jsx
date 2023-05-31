@@ -1,35 +1,39 @@
-import { useEffect, useState } from "react";
-import {
-  Box,
-  Flex,
-  Text,
-  Input,
-  IconButton,
-  Button,
-  Divider,
-  Heading,
-} from "@chakra-ui/react";
+import { Box, Flex, Heading } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { ArrowBackIcon } from "@chakra-ui/icons";
-import { MdSend } from "react-icons/md";
-import { Outlet } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import ChatUsers from "../components/Chat/ChatLeft/ChatUsers";
-import { getChatData } from "../redux/actions/chatAction";
-import { setIsStartChat } from "../redux/slices/chat";
+import { getChatMessages, getChatUsers } from "../redux/actions/chatAction";
+import { setIsOpenChat, setIsStartChat } from "../redux/slices/chat";
 function Chat() {
   const dispatch = useDispatch();
-  const { isStartChat } = useSelector((state) => state.chat);
+  const { isStartChat, isOpenChat } = useSelector((state) => state.chat);
+  const { userInfo } = useSelector((state) => state.user);
+  const params = useParams();
 
   useEffect(() => {
-    dispatch(getChatData());
-    dispatch(setIsStartChat(false));
+    dispatch(getChatUsers());
+    if (params && params.userId) {
+      dispatch(getChatUsers(params.userId));
+      dispatch(setIsStartChat(true));
+      dispatch(getChatMessages(params.userId));
+    }
+    return () => {
+      dispatch(setIsStartChat(false));
+      dispatch(setIsOpenChat(false));
+    };
   }, []);
+
+  useEffect(() => {
+    console.log("isOpenChat", isOpenChat);
+  }, [isOpenChat]);
+
   return (
     <Box height={"100vh"} borderTop={"2px solid #f5897e"}>
       <Flex height={"100%"}>
         <ChatUsers />
-        {!isStartChat && (
+        {!isOpenChat && (
           <Heading width={"100%"} textAlign={"center"} mt={4}>
             Hãy bắt đầu cuộc trò chuyện
           </Heading>

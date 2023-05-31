@@ -11,12 +11,12 @@ import { useState } from "react";
 import { FaRegPaperPlane } from "react-icons/fa";
 // import { MdSend } from "react-icons/md";
 
-function ChatMessageInput() {
+function ChatMessageInput({ handleSendMess }) {
   const [message, setMessage] = useState("");
   const [disable, setDisable] = useState(true);
 
   const handleSendMessage = () => {
-    console.log(message);
+    handleSendMess(message);
     setMessage("");
     setDisable(true);
   };

@@ -12,19 +12,29 @@ export const initialState = {
   postsCount: 0, // tổng số bài đăng
   filterParams: "",
   isLike: false,
-  isReview: false,
-  reviews: [],
   createdPostList: null,
   favouritePostList: null,
   postForNotification: null,
+  updateLoading: false,
+  updateError: null,
+  isReview: false,
+  reviews: [],
+  showReviewList: [],
+  countRating: [],
 };
 
 export const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
-    setLoading: (state) => {
-      state.loading = true;
+    setLoading: (state, { payload }) => {
+      state.loading = payload;
+    },
+    setUpdateLoading: (state, { payload }) => {
+      state.updateLoading = payload;
+    },
+    setUpdateError: (state, { payload }) => {
+      state.updateError = payload;
     },
     setPostList: (state, { payload }) => {
       state.postList = payload;
@@ -77,6 +87,9 @@ export const postSlice = createSlice({
       state.error = null;
       state.loading = false;
     },
+    setCountRating: (state, { payload }) => {
+      state.countRating = payload;
+    },
     setReviews: (state, { payload }) => {
       state.reviews = payload;
       state.error = null;
@@ -101,6 +114,9 @@ export const postSlice = createSlice({
       state.error = null;
       state.loading = false;
     },
+    setShowReviewList: (state, { payload }) => {
+      state.showReviewList = payload;
+    },
   },
 });
 
@@ -121,6 +137,10 @@ export const {
   setCreatedPostList,
   setFavouritePostList,
   setPostForNotification,
+  setUpdateError,
+  setUpdateLoading,
+  setCountRating,
+  setShowReviewList,
 } = postSlice.actions;
 
 export default postSlice.reducer;

@@ -1,10 +1,11 @@
 import { Button, Flex, HStack, Stack, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RatingIcon from "../../components/Rating/RatingIcon";
 import RatingSystem from "../../components/Rating/RatingSystem";
 import { useDispatch, useSelector } from "react-redux";
+import { setShowReviewList } from "../../redux/slices/post";
 let initialRatingSelections = [
-  { id: 0, text: "Tất cả", isActive: true },
+  { id: 0, text: "Tất cả", isActive: true, numRating: 4 },
   { id: 5, text: "5 Sao", numRating: 4, isActive: false },
   { id: 4, text: "4 Sao", numRating: 1, isActive: false },
   { id: 3, text: "3 Sao", numRating: 3, isActive: false },
@@ -12,23 +13,32 @@ let initialRatingSelections = [
   { id: 1, text: "1 Sao", numRating: 2, isActive: false },
 ];
 const PostRatingOverview = () => {
+  const [ratingSelections, setRatingSelections] = useState(
+    initialRatingSelections
+  );
   const dispatch = useDispatch();
   const post = useSelector((state) => state.post);
-  const { singlePost } = post;
+  const { singlePost, countRating, reviews, showReviewList } = post;
 
   const {
     post: { star },
   } = singlePost;
-  const [ratingSelections, setRatingSelections] = useState(
-    initialRatingSelections
-  );
+
   const styleBtnActive = {
     backgroundColor: "#fff",
     color: "#ee4d2d",
     borderColor: "#ee4d2d",
   };
+
   const handleClick = (id) => {
-    console.log(`click ${id}`);
+    // loc tu reviews ra nhung cai co rating = id (nếu là 0 thì lấy all reviews)
+    const newReviewList = reviews.filter((review) => {
+      if (id === 0) {
+        return true;
+      }
+      return review.rating === id;
+    });
+    dispatch(setShowReviewList(newReviewList));
     setRatingSelections((prev) => {
       return prev.map((item) =>
         item.id === id
@@ -37,30 +47,48 @@ const PostRatingOverview = () => {
       );
     });
   };
+
+  useEffect(() => {
+    if (countRating.length > 0) {
+      const newRatingSelection = [...ratingSelections];
+      newRatingSelection[0].numRating = countRating[0];
+      newRatingSelection.forEach((rating) => {
+        rating.numRating = countRating[rating.id];
+      });
+      setRatingSelections(newRatingSelection);
+    }
+  }, [countRating]);
+
+  // mặc định hiện all đánh giá khi reload
+  useEffect(() => {
+    setRatingSelections(initialRatingSelections);
+  }, []);
   return (
     <Flex
       gap={8}
       padding={"24px"}
       bgColor={"pink.50"}
       border={"1px solid #f9ede5"}
+      flexWrap={{base: 'wrap', sm: 'nowrap'}}
     >
-      <Flex pl={"12px"} alignItems={"baseline"} gap={"4px"}>
-        <Text fontWeight={"600"} fontSize={"20px"} color={"#ee4d2d"}>
+      <Flex pl={"12px"} alignItems={"center"} gap={"4px"}>
+        <Text fontWeight={"600"} fontSize={{base: "14px", sm: "18px"}} color={"#ee4d2d"}>
           {" "}
-          <Text as={"span"} fontSize={"26px"}>
-            {star || 0}
+          <Text as={"span"} fontSize={{base: '14px', sm: "26px"}}>
+            {star.toFixed(2) || 0}
           </Text>{" "}
           trên 5
         </Text>
-        <RatingIcon size={8} filled={"yellow.200"} />
+        <RatingIcon size={6} filled={"yellow.200"} />
         {/* <RatingSystem rating={star} /> */}
         {/* filled={"#ee4d2d"} size={6} */}
       </Flex>
-      <Flex flexWrap={"wrap"} gap={4}>
+      <Flex flexWrap={"wrap"} alignItems={"center"} gap={4}>
         {ratingSelections.map((rating) => {
           return (
             <Button
               key={rating.id}
+              size={{base: 'xs', sm: 'md'}}
               bgColor={"white"}
               fontWeight={"400"}
               borderRadius={"3px"}

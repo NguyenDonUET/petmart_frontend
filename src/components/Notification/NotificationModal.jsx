@@ -37,8 +37,12 @@ const NotificationModal = ({ singlePost, isOpen, onClose, extendDate }) => {
               <>
                 <Text>Tên bài: {singlePost.post.title}</Text>
                 <Text>Tác giả: {singlePost.creator.username}</Text>
-                <Text>Ngày hết hạn cũ: {oldDate}</Text>
-                <Text>Ngày hết hạn mới: {newDate} </Text>
+                {oldDate !== newDate && (
+                  <>
+                    <Text>Ngày hết hạn cũ: {oldDate}</Text>
+                    <Text>Ngày hết hạn mới: {newDate} </Text>
+                  </>
+                )}
               </>
             )}
             <Button

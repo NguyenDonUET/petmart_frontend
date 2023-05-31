@@ -2,9 +2,12 @@ import { Box } from "@chakra-ui/react";
 import React from "react";
 import SubTitle from "../../components/PostDetail/SubTitle";
 import PostRatingOverview from "./PostRatingOverview";
-import PostRatingList from "./PostRatingList";
+// import PostRatingList from "./PostRatingList";
 import ReviewPost from "../../components/ReviewPost/ReviewPost";
 import { useSelector } from "react-redux";
+import { lazy } from "react";
+import LazyLoadingContainer from "../../components/LazyLoadingContainer";
+const LazyPostRatingList = lazy(() => import("./PostRatingList"));
 
 const PostReviews = () => {
   const user = useSelector((state) => state.user);
@@ -13,7 +16,9 @@ const PostReviews = () => {
       <SubTitle>Đánh giá sản phẩm</SubTitle>
       <PostRatingOverview />
       <Box textAlign={"end"}>{user.userInfo && <ReviewPost />}</Box>
-      <PostRatingList />
+      <LazyLoadingContainer>
+        <LazyPostRatingList />
+      </LazyLoadingContainer>
     </Box>
   );
 };

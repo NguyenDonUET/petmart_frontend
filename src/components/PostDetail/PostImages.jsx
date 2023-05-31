@@ -45,13 +45,13 @@ const PostImages = ({ images }) => {
       cursor: "pointer",
    };
    return (
-      <Box position={"relative"} bgColor={"gray.200"}>
+      <Box position={"relative"} bgColor={"gray.200"} width={{base: '300px'}}>
          <Flex sx={styleArrowBtn} top={"50%"} left={"0%"} onClick={handlePrev}>
             <ChevronLeftIcon color="white" boxSize={8} />
          </Flex>
 
          <Image
-            boxSize={"400px"}
+            boxSize={{base:'300px', sm: "400px"}}
             src={images[currentIndex]}
             objectFit={"contain"}
             alt="img"

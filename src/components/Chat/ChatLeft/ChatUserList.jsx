@@ -1,7 +1,10 @@
 import { Box, Flex } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ChatSingleUser from "./ChatSingleUser";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { setIsStartChat } from "../../../redux/slices/chat";
+import { getChatMessages } from "../../../redux/actions/chatAction";
 
 const styleScroll = {
   "&::-webkit-scrollbar": {
@@ -25,6 +28,18 @@ const styleScroll = {
 
 const ChatUserList = () => {
   const { chatList } = useSelector((state) => state.chat);
+  const { userInfo } = useSelector((state) => state.user);
+  const [chatUsers, setChatUsers] = useState(null);
+  const params = useParams();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (chatList) {
+      console.log("🚀 ~ chatList:", chatList);
+      setChatUsers(chatList);
+    }
+  }, [chatList]);
+
   return (
     <Flex
       gap={4}
@@ -34,13 +49,9 @@ const ChatUserList = () => {
       flexGrow={1}
       sx={styleScroll}
     >
-      {chatList &&
-        chatList.map((item) => {
-          const user = item.recipients[1];
-          const lastMess = item.lastestMessage.body;
-          return (
-            <ChatSingleUser key={user.id} user={user} lastMess={lastMess} />
-          );
+      {chatUsers &&
+        chatUsers.map((user) => {
+          return <ChatSingleUser key={user.id} user={user} />;
         })}
     </Flex>
   );

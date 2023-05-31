@@ -1,22 +1,19 @@
-import { useState, useRef, useEffect } from "react";
 import {
   Box,
   Button,
   Icon,
-  IconButton,
-  List,
-  ListItem,
   Stack,
   Text,
   Tooltip,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { AiOutlineBell, AiFillBell } from "react-icons/ai";
-import NotificationList from "./NotificationList";
-import { useSelector, useDispatch } from "react-redux";
-import { getNotifications } from "../../redux/actions/notificationActions";
+import { useEffect, useState } from "react";
+import { AiFillBell, AiOutlineBell } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getNotifications } from "../../redux/actions/notificationActions";
+import NotificationList from "./NotificationList";
 
 export default function NotificationButton() {
   const [notificationsCount, setNotificationsCount] = useState(0);
@@ -24,23 +21,20 @@ export default function NotificationButton() {
   const { numOfNewNotifications, error } = useSelector(
     (state) => state.notification
   );
+  const { userInfo } = useSelector((state) => state.user);
 
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const boxRef = useRef(null);
-  const btnRef = useRef(null);
-  const iconRef = useRef(null);
 
   const handleClick = () => {
-    if (isOpen) {
-      onClose();
-    } else {
-      onOpen();
-    }
+    isOpen ? onClose() : onOpen();
   };
 
   useEffect(() => {
+    if (!userInfo) {
+      return;
+    }
     dispatch(getNotifications());
   }, []);
 
@@ -64,15 +58,15 @@ export default function NotificationButton() {
     <Box position="relative">
       <Tooltip label="Thông báo">
         <Button
-          ref={btnRef}
+          className="notifi-button"
           colorScheme="gray"
           borderRadius={"50%"}
           onClick={() => handleClick()}
         >
           <Icon
+            className="notifi-icon"
             as={isOpen ? AiFillBell : AiOutlineBell}
             boxSize={5}
-            ref={iconRef}
           />
           {notificationsCount > 0 && (
             <Box
@@ -95,7 +89,7 @@ export default function NotificationButton() {
       </Tooltip>
       {isOpen && (
         <Box
-          ref={boxRef}
+          className="notification"
           position="absolute"
           top="100%"
           right="0"
@@ -114,7 +108,7 @@ export default function NotificationButton() {
             <Text fontSize="lg" fontWeight="bold" textAlign={"center"}>
               Thông báo
             </Text>
-            <NotificationList />
+            <NotificationList closeList={onClose} />
             <Button size="sm" variant="link" onClick={onClose}>
               Đóng
             </Button>
