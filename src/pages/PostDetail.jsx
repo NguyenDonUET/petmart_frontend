@@ -276,6 +276,7 @@ const PostDetail = () => {
                   onClick={() => {
                     navigate(`/chat/${creator.id}`);
                   }}
+                  isDisabled={creator.id === userInfo.user.id}
                 >
                   Liên hệ với người bán
                 </Button>

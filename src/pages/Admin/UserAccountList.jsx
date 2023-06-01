@@ -83,6 +83,7 @@ const UserAccountList = () => {
 
   return (
     <>
+      {!userList && <LoadingList />}
       {userList && (
         <Box marginX={8} paddingTop={5}>
           {error}

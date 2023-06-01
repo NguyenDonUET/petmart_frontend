@@ -12,13 +12,14 @@ import {
   sendMessages,
 } from "../../../redux/actions/chatAction";
 import { setChatMessages, setIsOpenChat } from "../../../redux/slices/chat";
+import { setChatList } from "../../../redux/slices/chat";
 const serverEndpoint = "http://localhost:5000";
 const ChatConversation = () => {
   const [arrivalMessage, setArrivalMessage] = useState(null);
 
   const { isStartChat, isOpenChat } = useSelector((state) => state.chat);
   const { userInfo } = useSelector((state) => state.user);
-  const { chatMessages } = useSelector((state) => state.chat);
+  const { chatMessages, chatList } = useSelector((state) => state.chat);
   const socketRef = useRef(null);
   const { userId } = useParams();
   const dispatch = useDispatch();
@@ -66,10 +67,19 @@ const ChatConversation = () => {
 
     // call api post message
     dispatch(sendMessages(userId, msg));
-    // set lại state chatMessages
+    // set lại state chatMessages: update lên gia diện
     dispatch(
       setChatMessages([...chatMessages, { fromSelf: true, message: msg }])
     );
+    // update last message của chat users
+    const newChatList = chatList.map((user) => {
+      if (user.id === userId) {
+        return { ...user, lastMess: msg };
+      }
+      return user;
+    });
+    // console.log("🚀 ~ newChatList:", newChatList);
+    dispatch(setChatList(newChatList));
   };
 
   useEffect(() => {
