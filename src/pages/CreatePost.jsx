@@ -19,6 +19,7 @@ import {
   RadioGroup,
   Select,
   Textarea,
+  Text,
   useToast,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
@@ -46,6 +47,8 @@ const CreatePost = () => {
   const toast = useToast();
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.post);
+  const user = useSelector((state) => state.user);
+  const { userInfo } = user;
 
   const handleSubmit = (values) => {
     dispatch(createPost(values));
@@ -135,68 +138,84 @@ const CreatePost = () => {
 
   return (
     <Flex justifyContent={"center"}>
-      <Box width={"40%"} m={"3"}>
-        <Heading
-          color={"#f5897e"}
-          as={"h1"}
-          fontSize={"24px"}
-          pb={"24px"}
-          display={"flex"}
-          justifyContent={"center"}
-        >
-          THÊM BÀI ĐĂNG
-        </Heading>
-        <Formik
-          initialValues={{
-            title: "",
-            province: "",
-            district: "",
-            commune: "",
-            address: "",
-            species: "",
-            genre: "",
-            quantity: "",
-            gender: "",
-            price: "",
-            weight: "",
-            age: "",
-            vaccination: false,
-            description: "",
-            images: [],
-            endDate: moment().add(7, "days").toDate().toString(),
+      {userInfo &&
+      userInfo.user.role == "seller" &&
+      userInfo.user.isApproved ? (
+        <Box
+          width={{
+            base: "100%",
+            sm: "70%",
+            md: "500px",
           }}
-          onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-            handleSubmit(values);
-            //console.log(values);
+          m={{
+            base: "3",
+            md: "3",
           }}
-          validationSchema={validationSchema}
         >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting,
-            setFieldValue,
-          }) => (
-            <Form>
-              <Field name="title">
-                {({ field, form }) => (
-                  <FormControl
-                    isRequired
-                    isInvalid={form.errors.title && form.touched.title}
-                    mb={"4"}
-                  >
-                    <FormLabel>Tiêu đề</FormLabel>
-                    <Input {...field} />
-                    <FormErrorMessage>{form.errors.title}</FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
+          <Heading
+            color={"#f5897e"}
+            as={"h1"}
+            fontSize={"24px"}
+            pb={"24px"}
+            display={"flex"}
+            justifyContent={"center"}
+          >
+            THÊM BÀI ĐĂNG
+          </Heading>
+          <Formik
+            initialValues={{
+              title: "",
+              province: "",
+              district: "",
+              commune: "",
+              address: "",
+              species: "",
+              genre: "",
+              quantity: "",
+              gender: "",
+              price: "",
+              weight: "",
+              age: "",
+              vaccination: false,
+              description: "",
+              images: [],
+              endDate: moment().add(7, "days").toDate().toString(),
+            }}
+            onSubmit={async (
+              values,
+              { setErrors, setStatus, setSubmitting }
+            ) => {
+              handleSubmit(values);
+              //console.log(values);
+            }}
+            validationSchema={validationSchema}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+              setFieldValue,
+            }) => (
+              <Form>
+                <Field name="title">
+                  {({ field, form }) => (
+                    <FormControl
+                      isRequired
+                      isInvalid={form.errors.title && form.touched.title}
+                      mb={"4"}
+                    >
+                      <FormLabel>Tiêu đề</FormLabel>
+                      <Input {...field} />
+                      <FormErrorMessage>{form.errors.title}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
 
-              {/* <Field name="species">
+                {/* <Field name="species">
                 {({ field, form }) => (
                   <FormControl
                     isRequired
@@ -223,453 +242,486 @@ const CreatePost = () => {
                 )}
               </Field> */}
 
-              <Grid templateColumns={"repeat(2, 1fr)"} gap={4}>
-                <GridItem>
-                  <Field name="species">
-                    {({ field, form }) => (
-                      <FormControl
-                        isRequired
-                        isInvalid={form.errors.species && form.touched.species}
-                        mb={"4"}
-                      >
-                        <FormLabel>Loài</FormLabel>
-                        <Select
-                          placeholder="Chọn loài"
-                          onChange={(e) => {
-                            handleSpeciesChange(e);
-                            form.setValues({
-                              ...form.values,
-                              species: e.target.value,
-                            });
-                          }}
-                        >
-                          {speciesGenre.map((s) => (
-                            <option key={s.Id} value={s.Name}>
-                              {s.Name}
-                            </option>
-                          ))}
-                        </Select>
-                        <FormErrorMessage>
-                          {form.errors.species}
-                        </FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                </GridItem>
-                <GridItem>
-                  <Field name="genre">
-                    {({ field, form }) => (
-                      <FormControl
-                        isInvalid={form.errors.genre && form.touched.genre}
-                        mb={"4"}
-                      >
-                        <FormLabel>Giống</FormLabel>
-                        <Select
-                          placeholder="Chọn giống"
-                          onChange={(e) => {
-                            form.setValues({
-                              ...form.values,
-                              genre: e.target.value,
-                            });
-                          }}
-                        >
-                          {genre.map((g) => (
-                            <option key={g.Id} value={g.Name}>
-                              {g.Name}
-                            </option>
-                          ))}
-                        </Select>
-                        <FormErrorMessage>
-                          {form.errors.species}
-                        </FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                </GridItem>
-              </Grid>
-
-              <Field name="quantity">
-                {({ field, form }) => (
-                  <FormControl
-                    isRequired
-                    isInvalid={form.errors.quantity && form.touched.quantity}
-                    mb={"4"}
-                  >
-                    <FormLabel>Số lượng </FormLabel>
-                    <NumberInput
-                      value={form.values.quantity}
-                      onChange={(valueNumber) =>
-                        form.setValues({
-                          ...form.values,
-                          quantity: valueNumber,
-                        })
-                      }
-                      min={1}
-                      step={1}
-                    >
-                      <NumberInputField />
-                      <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                      </NumberInputStepper>
-                    </NumberInput>
-                    <FormErrorMessage>{form.errors.quantity}</FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
-
-              <Field name="gender">
-                {({ field, form }) => (
-                  <FormControl
-                    isRequired
-                    isInvalid={form.errors.gender && form.touched.gender}
-                    mb={"4"}
-                  >
-                    <FormLabel>Giới tính</FormLabel>
-                    <RadioGroup
-                      {...field}
-                      onChange={(value) =>
-                        form.setValues({ ...form.values, gender: value })
-                      }
-                    >
-                      <Radio value="Đực">Giống đực</Radio>
-                      <Radio value="Cái" pl={"30%"}>
-                        Giống cái
-                      </Radio>
-                    </RadioGroup>
-                    <FormErrorMessage>{form.errors.gender}</FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
-
-              <Grid templateColumns={"repeat(2, 1fr)"} gap={4}>
-                <GridItem>
-                  <Field name="weight">
-                    {({ field, form }) => (
-                      <FormControl
-                        isRequired
-                        isInvalid={form.errors.weight && form.touched.weight}
-                        mb={"4"}
-                      >
-                        <FormLabel>Cân nặng (kg)</FormLabel>
-                        <NumberInput
-                          value={form.values.weight}
-                          onChange={(valueNumber) =>
-                            form.setValues({
-                              ...form.values,
-                              weight: valueNumber,
-                            })
+                <Grid templateColumns={"repeat(2, 1fr)"} gap={4}>
+                  <GridItem>
+                    <Field name="species">
+                      {({ field, form }) => (
+                        <FormControl
+                          isRequired
+                          isInvalid={
+                            form.errors.species && form.touched.species
                           }
-                          min={0}
-                          precision={2}
-                          step={0.2}
+                          mb={"4"}
                         >
-                          <NumberInputField />
-                          <NumberInputStepper>
-                            <NumberIncrementStepper />
-                            <NumberDecrementStepper />
-                          </NumberInputStepper>
-                        </NumberInput>
-                        <FormErrorMessage>
-                          {form.errors.weight}
-                        </FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                </GridItem>
-
-                <GridItem>
-                  <Field name="age">
-                    {({ field, form }) => (
-                      <FormControl
-                        isRequired
-                        isInvalid={form.errors.age && form.touched.age}
-                        mb={"4"}
-                      >
-                        <FormLabel>Tuổi (tháng)</FormLabel>
-
-                        <NumberInput
-                          value={form.values.age}
-                          onChange={(valueNumber) =>
-                            form.setValues({ ...form.values, age: valueNumber })
-                          }
-                          min={0}
-                          step={1}
+                          <FormLabel>Loài</FormLabel>
+                          <Select
+                            placeholder="Chọn loài"
+                            onChange={(e) => {
+                              handleSpeciesChange(e);
+                              form.setValues({
+                                ...form.values,
+                                species: e.target.value,
+                              });
+                            }}
+                          >
+                            {speciesGenre.map((s) => (
+                              <option key={s.Id} value={s.Name}>
+                                {s.Name}
+                              </option>
+                            ))}
+                          </Select>
+                          <FormErrorMessage>
+                            {form.errors.species}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </GridItem>
+                  <GridItem>
+                    <Field name="genre">
+                      {({ field, form }) => (
+                        <FormControl
+                          isInvalid={form.errors.genre && form.touched.genre}
+                          mb={"4"}
                         >
-                          <NumberInputField />
-                          <NumberInputStepper>
-                            <NumberIncrementStepper />
-                            <NumberDecrementStepper />
-                          </NumberInputStepper>
-                        </NumberInput>
-                        <FormErrorMessage>{form.errors.age}</FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                </GridItem>
-              </Grid>
+                          <FormLabel>Giống</FormLabel>
+                          <Select
+                            placeholder="Chọn giống"
+                            onChange={(e) => {
+                              form.setValues({
+                                ...form.values,
+                                genre: e.target.value,
+                              });
+                            }}
+                          >
+                            {genre.map((g) => (
+                              <option key={g.Id} value={g.Name}>
+                                {g.Name}
+                              </option>
+                            ))}
+                          </Select>
+                          <FormErrorMessage>
+                            {form.errors.species}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </GridItem>
+                </Grid>
 
-              <Field name="price">
-                {({ field, form }) => (
-                  <FormControl
-                    isRequired
-                    isInvalid={form.errors.price && form.touched.price}
-                    mb={"4"}
-                  >
-                    <FormLabel>Giá (VNĐ)</FormLabel>
-                    <NumberInput
-                      // {...field}
-                      value={form.values.price}
-                      onChange={(valueNumber) =>
-                        form.setValues({ ...form.values, price: valueNumber })
-                      }
-                      min={0}
-                      step={1000}
+                <Field name="quantity">
+                  {({ field, form }) => (
+                    <FormControl
+                      isRequired
+                      isInvalid={form.errors.quantity && form.touched.quantity}
+                      mb={"4"}
                     >
-                      <NumberInputField />
-                      <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                      </NumberInputStepper>
-                    </NumberInput>
-                    <FormErrorMessage>{form.errors.price}</FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
-
-              <Field name="vaccination">
-                {({ field, form }) => (
-                  <FormControl
-                    isRequired
-                    isInvalid={
-                      form.errors.vaccination && form.touched.vaccination
-                    }
-                    mb={"4"}
-                  >
-                    <FormLabel>Tiêm phòng</FormLabel>
-                    <RadioGroup
-                      {...field}
-                      onChange={(value) => {
-                        form.setValues({
-                          ...form.values,
-                          vaccination: value === "true" ? true : false,
-                        });
-                      }}
-                    >
-                      <Radio value={true}>Đã tiêm chủng</Radio>
-                      <Radio value={false} pl={"30%"}>
-                        Chưa tiêm chủng
-                      </Radio>
-                    </RadioGroup>
-                    <FormErrorMessage>
-                      {form.errors.vaccination}
-                    </FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
-
-              <Field name="description">
-                {({ field, form }) => (
-                  <FormControl
-                    isRequired
-                    isInvalid={
-                      form.errors.description && form.touched.description
-                    }
-                    mb={"4"}
-                  >
-                    <FormLabel>Mô tả</FormLabel>
-                    <Textarea
-                      {...field}
-                      placeholder="Hãy cho mọi người biết về thú cưng của bạn như: Tính cách, thói quen,..."
-                    />
-                    <FormErrorMessage>
-                      {form.errors.description}
-                    </FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
-
-              <FormLabel>Địa chỉ hiển thị</FormLabel>
-
-              <Grid templateColumns={"repeat(3, 1fr)"} gap={4}>
-                <GridItem>
-                  <Field name="province">
-                    {({ field, form }) => (
-                      <FormControl
-                        isInvalid={
-                          form.errors.province && form.touched.province
+                      <FormLabel>Số lượng </FormLabel>
+                      <NumberInput
+                        value={form.values.quantity}
+                        onChange={(valueNumber) =>
+                          form.setValues({
+                            ...form.values,
+                            quantity: valueNumber,
+                          })
                         }
-                        mb={"4"}
+                        min={1}
+                        step={1}
                       >
-                        <FormLabel></FormLabel>
-                        <Select
-                          placeholder="Chọn tỉnh thành"
-                          onChange={(e) => {
-                            handleProvinceChange(e);
-                            form.setValues({
-                              ...form.values,
-                              province: e.target.value,
-                            });
-                          }}
-                        >
-                          {province.map((c) => (
-                            <option key={c.Id} value={c.Name}>
-                              {c.Name}
-                            </option>
-                          ))}
-                        </Select>
-                        <FormErrorMessage>
-                          {form.errors.province}
-                        </FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                </GridItem>
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                      <FormErrorMessage>
+                        {form.errors.quantity}
+                      </FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
 
-                <GridItem>
-                  <Field name="district">
-                    {({ field, form }) => (
-                      <FormControl
-                        isInvalid={
-                          form.errors.district && form.touched.district
+                <Field name="gender">
+                  {({ field, form }) => (
+                    <FormControl
+                      isRequired
+                      isInvalid={form.errors.gender && form.touched.gender}
+                      mb={"4"}
+                    >
+                      <FormLabel>Giới tính</FormLabel>
+                      <RadioGroup
+                        {...field}
+                        onChange={(value) =>
+                          form.setValues({ ...form.values, gender: value })
                         }
-                        mb={"4"}
                       >
-                        <FormLabel></FormLabel>
-                        <Select
-                          placeholder="Chọn quận huyện"
-                          onChange={(e) => {
-                            handleDistrictChange(e);
-                            form.setValues({
-                              ...form.values,
-                              district: e.target.value,
-                            });
+                        <Box
+                          display={"flex"}
+                          flexDirection={{
+                            base: "column",
+                            sm: "column",
+                            md: "row",
                           }}
                         >
-                          {district.map((c) => (
-                            <option key={c.Id} value={c.Name}>
-                              {c.Name}
-                            </option>
-                          ))}
-                        </Select>
-                        <FormErrorMessage>
-                          {form.errors.district}
-                        </FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                </GridItem>
+                          <Radio value="Đực">Giống đực</Radio>
+                          <Radio value="Cái" pl={{ md: "30%" }}>
+                            Giống cái
+                          </Radio>
+                        </Box>
+                      </RadioGroup>
+                      <FormErrorMessage>{form.errors.gender}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
 
-                <GridItem>
-                  <Field name="commune">
-                    {({ field, form }) => (
-                      <FormControl
-                        isInvalid={form.errors.commune && form.touched.commune}
-                        mb={"4"}
-                      >
-                        <FormLabel></FormLabel>
-                        <Select
-                          placeholder="Chọn phường xã"
-                          onChange={(e) =>
-                            form.setValues({
-                              ...form.values,
-                              commune: e.target.value,
-                            })
-                          }
+                <Grid templateColumns={"repeat(2, 1fr)"} gap={4}>
+                  <GridItem>
+                    <Field name="weight">
+                      {({ field, form }) => (
+                        <FormControl
+                          isRequired
+                          isInvalid={form.errors.weight && form.touched.weight}
+                          mb={"4"}
                         >
-                          {commune.map((c) => (
-                            <option key={c.Id} value={c.Name}>
-                              {c.Name}
-                            </option>
-                          ))}
-                        </Select>
-                        <FormErrorMessage>
-                          {form.errors.commune}
-                        </FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-                </GridItem>
-              </Grid>
+                          <FormLabel>Cân nặng (kg)</FormLabel>
+                          <NumberInput
+                            value={form.values.weight}
+                            onChange={(valueNumber) =>
+                              form.setValues({
+                                ...form.values,
+                                weight: valueNumber,
+                              })
+                            }
+                            min={0}
+                            precision={2}
+                            step={0.2}
+                          >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                          <FormErrorMessage>
+                            {form.errors.weight}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </GridItem>
 
-              <Field name="address">
-                {({ field, form }) => (
-                  <FormControl
-                    isRequired
-                    isInvalid={form.errors.address && form.touched.address}
-                    mb={"4"}
-                  >
-                    <FormLabel>Địa chỉ chi tiết</FormLabel>
-                    <Input
-                      {...field}
-                      placeholder="Hãy ghi chi tiết về địa chỉ của bạn như : số nhà, đường, gần địa điểm lớn nào"
-                    />
-                    <FormErrorMessage>{form.errors.address}</FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
+                  <GridItem>
+                    <Field name="age">
+                      {({ field, form }) => (
+                        <FormControl
+                          isRequired
+                          isInvalid={form.errors.age && form.touched.age}
+                          mb={"4"}
+                        >
+                          <FormLabel>Tuổi (tháng)</FormLabel>
 
-              <Field name="endDate">
-                {({ field, form }) => (
-                  <FormControl
-                    isRequired
-                    isInvalid={form.errors.endDate && form.touched.endDate}
-                    mb={"4"}
-                  >
-                    <FormLabel>Thời gian kết thúc hiển thị</FormLabel>
-                    <DatePicker
-                      selected={endDatee}
-                      onChange={(date) => {
-                        handleEndDateeChange(date);
-                        form.setValues({ ...form.values, endDate: date });
-                      }}
-                      onSelect={(date) => {
-                        handleEndDateSelect(date);
-                        form.setValues({ ...form.values, endDate: date });
-                      }}
-                      minDate={moment().toDate()}
-                      dateFormat="dd/MM/yyyy"
-                    />
-                    <FormHelperText>
-                      Sau thời gian trên bài đăng sẽ hết hạn
-                    </FormHelperText>
-                    <FormErrorMessage>{form.errors.endDate}</FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
+                          <NumberInput
+                            value={form.values.age}
+                            onChange={(valueNumber) =>
+                              form.setValues({
+                                ...form.values,
+                                age: valueNumber,
+                              })
+                            }
+                            min={0}
+                            step={1}
+                          >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                          <FormErrorMessage>{form.errors.age}</FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </GridItem>
+                </Grid>
 
-              <Field name="images">
-                {({ field, form }) => (
-                  <FormControl
-                    isRequired
-                    isInvalid={form.errors.images && form.touched.images}
-                    mb={"4"}
-                  >
-                    <FormLabel>Ảnh</FormLabel>
-                    <FilesDropzone
-                      onUploaded={(e) => {
-                        form.setValues({ ...form.values, images: e });
-                      }}
-                      defaultFiles={[]}
-                    />
-                    <FormErrorMessage>{form.errors.images}</FormErrorMessage>
-                  </FormControl>
-                )}
-              </Field>
+                <Field name="price">
+                  {({ field, form }) => (
+                    <FormControl
+                      isRequired
+                      isInvalid={form.errors.price && form.touched.price}
+                      mb={"4"}
+                    >
+                      <FormLabel>Giá (VNĐ)</FormLabel>
+                      <NumberInput
+                        // {...field}
+                        value={form.values.price}
+                        onChange={(valueNumber) =>
+                          form.setValues({ ...form.values, price: valueNumber })
+                        }
+                        min={0}
+                        step={1000}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                      <FormErrorMessage>{form.errors.price}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
 
-              <Button
-                type="submit"
-                mt={4}
-                colorScheme="blue"
-                bg="#f5897e"
-                _hover={{ bg: "#f56051" }}
-              >
-                Đăng bài viết
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      </Box>
+                <Field name="vaccination">
+                  {({ field, form }) => (
+                    <FormControl
+                      isRequired
+                      isInvalid={
+                        form.errors.vaccination && form.touched.vaccination
+                      }
+                      mb={"4"}
+                    >
+                      <FormLabel>Tiêm phòng</FormLabel>
+                      <RadioGroup
+                        {...field}
+                        onChange={(value) => {
+                          form.setValues({
+                            ...form.values,
+                            vaccination: value === "true" ? true : false,
+                          });
+                        }}
+                      >
+                        <Box
+                          display={"flex"}
+                          flexDirection={{
+                            base: "column",
+                            sm: "column",
+                            md: "row",
+                          }}
+                        >
+                          <Radio value={true}>Đã tiêm chủng</Radio>
+                          <Radio value={false} pl={{ md: "30%" }}>
+                            Chưa tiêm chủng
+                          </Radio>
+                        </Box>
+                      </RadioGroup>
+                      <FormErrorMessage>
+                        {form.errors.vaccination}
+                      </FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
+
+                <Field name="description">
+                  {({ field, form }) => (
+                    <FormControl
+                      isRequired
+                      isInvalid={
+                        form.errors.description && form.touched.description
+                      }
+                      mb={"4"}
+                    >
+                      <FormLabel>Mô tả</FormLabel>
+                      <Textarea
+                        {...field}
+                        placeholder="Hãy cho mọi người biết về thú cưng của bạn như: Tính cách, thói quen,..."
+                      />
+                      <FormErrorMessage>
+                        {form.errors.description}
+                      </FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
+
+                <FormLabel>Địa chỉ hiển thị</FormLabel>
+
+                <Grid
+                  templateColumns={{ lg: "repeat(3, 1fr)" }}
+                  gap={{ lg: "4" }}
+                >
+                  <GridItem>
+                    <Field name="province">
+                      {({ field, form }) => (
+                        <FormControl
+                          isInvalid={
+                            form.errors.province && form.touched.province
+                          }
+                          mb={"4"}
+                        >
+                          <FormLabel></FormLabel>
+                          <Select
+                            placeholder="Chọn tỉnh thành"
+                            onChange={(e) => {
+                              handleProvinceChange(e);
+                              form.setValues({
+                                ...form.values,
+                                province: e.target.value,
+                              });
+                            }}
+                          >
+                            {province.map((c) => (
+                              <option key={c.Id} value={c.Name}>
+                                {c.Name}
+                              </option>
+                            ))}
+                          </Select>
+                          <FormErrorMessage>
+                            {form.errors.province}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </GridItem>
+
+                  <GridItem>
+                    <Field name="district">
+                      {({ field, form }) => (
+                        <FormControl
+                          isInvalid={
+                            form.errors.district && form.touched.district
+                          }
+                          mb={"4"}
+                        >
+                          <FormLabel></FormLabel>
+                          <Select
+                            placeholder="Chọn quận huyện"
+                            onChange={(e) => {
+                              handleDistrictChange(e);
+                              form.setValues({
+                                ...form.values,
+                                district: e.target.value,
+                              });
+                            }}
+                          >
+                            {district.map((c) => (
+                              <option key={c.Id} value={c.Name}>
+                                {c.Name}
+                              </option>
+                            ))}
+                          </Select>
+                          <FormErrorMessage>
+                            {form.errors.district}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </GridItem>
+
+                  <GridItem>
+                    <Field name="commune">
+                      {({ field, form }) => (
+                        <FormControl
+                          isInvalid={
+                            form.errors.commune && form.touched.commune
+                          }
+                          mb={"4"}
+                        >
+                          <FormLabel></FormLabel>
+                          <Select
+                            placeholder="Chọn phường xã"
+                            onChange={(e) =>
+                              form.setValues({
+                                ...form.values,
+                                commune: e.target.value,
+                              })
+                            }
+                          >
+                            {commune.map((c) => (
+                              <option key={c.Id} value={c.Name}>
+                                {c.Name}
+                              </option>
+                            ))}
+                          </Select>
+                          <FormErrorMessage>
+                            {form.errors.commune}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </GridItem>
+                </Grid>
+
+                <Field name="address">
+                  {({ field, form }) => (
+                    <FormControl
+                      isRequired
+                      isInvalid={form.errors.address && form.touched.address}
+                      mb={"4"}
+                    >
+                      <FormLabel>Địa chỉ chi tiết</FormLabel>
+                      <Textarea
+                        {...field}
+                        placeholder="Hãy ghi chi tiết về địa chỉ của bạn như : số nhà, đường, gần địa điểm lớn nào"
+                      />
+                      <FormErrorMessage>{form.errors.address}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
+
+                <Field name="endDate">
+                  {({ field, form }) => (
+                    <FormControl
+                      isRequired
+                      isInvalid={form.errors.endDate && form.touched.endDate}
+                      mb={"4"}
+                    >
+                      <FormLabel>Thời gian kết thúc hiển thị</FormLabel>
+                      <DatePicker
+                        selected={endDatee}
+                        onChange={(date) => {
+                          handleEndDateeChange(date);
+                          form.setValues({ ...form.values, endDate: date });
+                        }}
+                        onSelect={(date) => {
+                          handleEndDateSelect(date);
+                          form.setValues({ ...form.values, endDate: date });
+                        }}
+                        minDate={moment().toDate()}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                      <FormHelperText>
+                        Sau thời gian trên bài đăng sẽ hết hạn
+                      </FormHelperText>
+                      <FormErrorMessage>{form.errors.endDate}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
+
+                <Field name="images">
+                  {({ field, form }) => (
+                    <FormControl
+                      isRequired
+                      isInvalid={form.errors.images && form.touched.images}
+                      mb={"4"}
+                    >
+                      <FormLabel>Ảnh</FormLabel>
+                      <FilesDropzone
+                        onUploaded={(e) => {
+                          form.setValues({ ...form.values, images: e });
+                        }}
+                        defaultFiles={[]}
+                      />
+                      <FormErrorMessage>{form.errors.images}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
+
+                <Button
+                  type="submit"
+                  mt={4}
+                  colorScheme="blue"
+                  bg="#f5897e"
+                  _hover={{ bg: "#f56051" }}
+                >
+                  Đăng bài viết
+                </Button>
+              </Form>
+            )}
+          </Formik>
+        </Box>
+      ) : (
+        <Text fontSize="xl">Bạn không được đăng bài</Text>
+      )}
     </Flex>
   );
 };

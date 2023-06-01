@@ -83,7 +83,17 @@ const LoginPage = () => {
 
   return (
     <Flex justifyContent={"center"} alignItems={"center"}>
-      <Box w="500px" p={8} borderWidth="1px" borderRadius="lg">
+      <Box
+        //className="loginBox"
+        w={{
+          base: "100%",
+          sm: "70%",
+          md: "500px",
+        }}
+        p={8}
+        borderWidth="1px"
+        borderRadius="lg"
+      >
         <Flex justifyContent={"center"}>
           <Heading color={"#f5897e"} as={"h1"} fontSize={"24px"} pb={"24px"}>
             ĐĂNG NHẬP

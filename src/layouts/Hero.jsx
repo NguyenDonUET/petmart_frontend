@@ -20,15 +20,15 @@ const Hero = () => {
         <Heading
           color={"#253D4E"}
           as={"h1"}
-          fontSize={{ base: "12px", md: "22px", lg: "48px" }}
+          fontSize={{ base: "13px", md: "22px", lg: "42px" }}
           pb={{ base: "4px", md: "24px" }}
         >
           Chào mừng bạn đến với Pethub!
         </Heading>
         <Text
-          maxW={{ base: "50vw", md: "580px", lg: "650px" }}
+          maxW={{ base: "100%", md: "60%", lg: "650px" }}
           pb={"32px"}
-          fontSize={{ base: "10px", md: "14px", lg: "18px" }}
+          fontSize={{ base: "10px", md: "12px", lg: "18px" }}
           color={"#787878"}
         >
           Website chuyên MUA BÁN VẬT NUÔI, THÚ CƯNG tốt nhất trên thị trường.
