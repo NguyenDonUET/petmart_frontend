@@ -43,7 +43,9 @@ function FilesDropzone({ className, onUploaded, defaultFiles, ...rest }) {
 
   // khi reload lại UpdatePost thì update lại image files
   useEffect(() => {
-    setFiles(defaultFiles);
+    if (defaultFiles.length > 0) {
+      setFiles(defaultFiles);
+    }
   }, [defaultFiles]);
 
   const handleUpload = () => {
@@ -109,7 +111,7 @@ function FilesDropzone({ className, onUploaded, defaultFiles, ...rest }) {
                 <ListItem key={i}>
                   {/* <Image boxSize={'200px'} src={}/> */}
                   <Grid
-                    fontSize={{ base: "12px", sm: "xl" }}
+                    fontSize={{ base: "12px", sm: "md" }}
                     templateColumns={{ base: "repeat(4, 1fr)" }}
                     gap={"4"}
                   >

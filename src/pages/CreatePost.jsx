@@ -51,6 +51,7 @@ const CreatePost = () => {
   const { userInfo } = user;
 
   const handleSubmit = (values) => {
+    // console.log("submit", values);
     dispatch(createPost(values));
     console.log(error);
     toast({
@@ -697,6 +698,7 @@ const CreatePost = () => {
                       <FormLabel>Ảnh</FormLabel>
                       <FilesDropzone
                         onUploaded={(e) => {
+                          console.log(e);
                           form.setValues({ ...form.values, images: e });
                         }}
                         defaultFiles={[]}
