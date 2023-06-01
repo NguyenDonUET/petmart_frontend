@@ -40,7 +40,7 @@ import LikeButton from "../components/Posts/LikeButton.jsx";
 import RatingSystem from "../components/Rating/RatingSystem.jsx";
 import PostInformation from "../layouts/ProductReviews/PostInformation.jsx";
 import PostReviews from "../layouts/ProductReviews/PostReviews.jsx";
-import { getPostById } from "../redux/actions/postActions.js";
+import { extendPost, getPostById } from "../redux/actions/postActions.js";
 import numberWithCommas from "../utils/numberWithCommas.js";
 import LoadingList from "../components/Admin/LoadingList.jsx";
 import { EditIcon, CalendarIcon } from "@chakra-ui/icons";
@@ -53,7 +53,9 @@ import "react-datepicker/dist/react-datepicker.css";
 const PostDetail = () => {
   const [postInfo, setPostInfo] = useState(null);
   const [creator, setCreator] = useState(null);
-  const [extendDate, setExtendDate] = useState();
+  const [extendDate, setExtendDate] = useState(null);
+  const [extending, setExtending] = useState(true);
+  const [isSubmitExtend, setIsSubmitExtend] = useState(false);
   const { id } = useParams();
   const toast = useToast();
 
@@ -63,7 +65,6 @@ const PostDetail = () => {
   const user = useSelector((state) => state.user);
   const { userInfo } = user;
   const navigate = useNavigate();
-  const numOfcomment = 4;
   const { isOpen, onOpen, onClose } = useDisclosure();
   let today = new Date();
 
@@ -78,9 +79,11 @@ const PostDetail = () => {
         dateObject = new Date(singlePost.post.endDate);
         setExtendDate(dateObject);
       }
+      setExtending(singlePost.post.extending);
       setPostInfo(singlePost.post);
       setCreator(singlePost.creator);
     }
+    console.log("🚀 ~ singlePost:", singlePost);
   }, [singlePost]);
 
   useEffect(() => {
@@ -93,6 +96,27 @@ const PostDetail = () => {
       });
     }
   }, [error]);
+
+  useEffect(() => {
+    console.log("🚀 ~ isSubmitExtend:", isSubmitExtend);
+    if (isSubmitExtend) {
+      toast({
+        description: "Đã gửi yêu cầu gia hạn cho admin",
+        status: "success",
+        isClosable: true,
+        position: "top",
+      });
+      onClose();
+      setExtending(true);
+      // dispatch(getPostById(id));
+      setIsSubmitExtend(false);
+    }
+  }, [isSubmitExtend]);
+
+  const handleExtendPost = (values) => {
+    dispatch(extendPost(values));
+    setIsSubmitExtend(true);
+  };
 
   const handleExtendDateChange = (date) => {
     setExtendDate(date);
@@ -120,7 +144,7 @@ const PostDetail = () => {
                   (userInfo.user.role === "admin" ||
                     userInfo.user.id === creator.id) && (
                     <Flex>
-                      {!postInfo.extending && (
+                      {!extending && (
                         <Tooltip label={"Gia hạn bài viết"} placement="top">
                           <IconButton
                             variant="outline"
@@ -245,7 +269,7 @@ const PostDetail = () => {
                     pid: singlePost.post.id,
                   }}
                   onSubmit={(values) => {
-                    console.log(values);
+                    handleExtendPost(values);
                   }}
                   validationSchema={Yup.object().shape({
                     extendDate: Yup.string().required(

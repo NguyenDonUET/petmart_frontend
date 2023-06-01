@@ -5,7 +5,6 @@ import {
   setCreatedPostList,
   setCreator,
   setError,
-  setErrorApprovePost,
   setFavouritePostList,
   setIsApprovedPost,
   setIsLike,
@@ -23,6 +22,7 @@ import {
   setUpdateError,
   setUpdateLoading,
 } from "../slices/post";
+
 import { checkPostId } from "../../utils/checkPostId";
 
 export const getAllPosts = () => async (dispatch) => {
@@ -194,6 +194,7 @@ export const getPostById = (id) => async (dispatch) => {
     );
   }
 };
+
 export const getPostForNotifi = (id) => async (dispatch) => {
   // dispatch(setLoading(true));
   try {
@@ -543,5 +544,39 @@ export const editPost = (postId, newPost) => async (dispatch, getState) => {
           : "An unexpected error has occured. Please try again later."
       )
     );
+  }
+};
+
+// Gửi yêu cầu gia hạn(seller) hoặc gia hạn post(admin)
+export const extendPost = (extendDate) => async (dispatch, getState) => {
+  const {
+    user: { userInfo },
+  } = getState();
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.patch(
+      `${import.meta.env.VITE_BASE_URL}/api/posts/${extendDate.pid}/extend`,
+      extendDate,
+      config
+    );
+
+    console.log("🚀 ~ gia hạn  bài đăng:", data);
+  } catch (error) {
+    console.log("🚀 ~ error:", error);
+
+    // dispatch(
+    //   setError(
+    //     error.response && error.response.data.message
+    //       ? error.response.data.message
+    //       : error.message
+    //       ? error.message
+    //       : "An unexpected error has occured. Please try again later."
+    //   )
+    // );
   }
 };

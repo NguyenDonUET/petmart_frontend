@@ -10,19 +10,38 @@ import {
   ModalOverlay,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { BsCheckCircle } from "react-icons/bs";
 import { formatDate } from "../../utils/formatDate";
+import { useDispatch } from "react-redux";
+import { extendPost } from "../../redux/actions/postActions";
+import { useEffect, useState } from "react";
 
 const NotificationModal = ({ singlePost, isOpen, onClose, extendDate }) => {
   const oldDate = formatDate(singlePost.post.endDate);
   const newDate = formatDate(extendDate);
+  let isEqual = oldDate === newDate;
+  const dispatch = useDispatch();
+  const toast = useToast();
 
   const handleApprovePost = () => {
     if (oldDate === newDate) {
       return;
     }
-    console.log("duyet bài");
+    toast({
+      description: "Đã đồng ý gia hạn",
+      status: "success",
+      isClosable: true,
+      position: "top",
+    });
+    dispatch(
+      extendPost({
+        extendDate,
+        pid: singlePost.post.id,
+      })
+    );
+    onClose();
   };
 
   return (
@@ -37,7 +56,7 @@ const NotificationModal = ({ singlePost, isOpen, onClose, extendDate }) => {
               <>
                 <Text>Tên bài: {singlePost.post.title}</Text>
                 <Text>Tác giả: {singlePost.creator.username}</Text>
-                {oldDate !== newDate && (
+                {!isEqual && (
                   <>
                     <Text>Ngày hết hạn cũ: {oldDate}</Text>
                     <Text>Ngày hết hạn mới: {newDate} </Text>
@@ -54,7 +73,7 @@ const NotificationModal = ({ singlePost, isOpen, onClose, extendDate }) => {
               leftIcon={<Icon as={BsCheckCircle} boxSize={4} />}
               onClick={() => handleApprovePost()}
             >
-              {oldDate === newDate ? "Đã duyệt" : "Duyệt"}
+              {isEqual ? "Đã duyệt" : "Duyệt"}
             </Button>
           </Stack>
         </ModalBody>

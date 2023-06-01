@@ -23,7 +23,6 @@ export const initialState = {
   countRating: [],
   isApprovedPost: false,
   loadingApprovePost: false,
-  errorApprovePost: null,
 };
 
 export const postSlice = createSlice({
@@ -127,10 +126,6 @@ export const postSlice = createSlice({
     setLoadingApprovePost: (state, { payload }) => {
       state.loadingApprovePost = payload;
     },
-    setErrorApprovePost: (state, { payload }) => {
-      state.errorApprovePost = payload;
-      state.loadingApprovePost = false;
-    },
   },
 });
 
@@ -156,7 +151,6 @@ export const {
   setCountRating,
   setShowReviewList,
   setIsApprovedPost,
-  setErrorApprovePost,
   setLoadingApprovePost,
 } = postSlice.actions;
 
