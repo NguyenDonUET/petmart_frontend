@@ -16,7 +16,7 @@ import React, { useEffect, useState } from "react";
 import AdminAccountTable from "../../components/Admin/AdminAccountTable";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserAccountList } from "../../redux/actions/userActions";
-import { setShowUserList } from "../../redux/slices/user";
+import { setIsApproveAccount, setShowUserList } from "../../redux/slices/user";
 import LoadingList from "../../components/Admin/LoadingList";
 
 const mapRole = {
@@ -51,6 +51,8 @@ const UserAccountList = () => {
         isClosable: true,
         position: "top",
       });
+      dispatch(setIsApproveAccount(false));
+      dispatch(getUserAccountList());
     }
   }, [isApproveAccount]);
 

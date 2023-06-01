@@ -720,7 +720,7 @@ const CreatePost = () => {
           </Formik>
         </Box>
       ) : (
-        <Text fontSize="xl">Bạn không được đăng bài</Text>
+        <Text fontSize="xl">Bạn chưa được đăng bài</Text>
       )}
     </Flex>
   );

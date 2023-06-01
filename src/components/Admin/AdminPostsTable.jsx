@@ -17,6 +17,8 @@ import TooltipIcon from "./TooltipIcon";
 import UserAccount from "./UserAccount";
 
 import { approveNewPost, getAllPosts } from "../../redux/actions/postActions";
+import { useEffect } from "react";
+import { setIsApprovedPost } from "../../redux/slices/post";
 
 const styleIcon = {
   cursor: "pointer",
@@ -27,20 +29,25 @@ const styleIcon = {
 const AdminPostTable = ({ tableHeader, posts }) => {
   const dispatch = useDispatch();
   const toast = useToast();
-  const { loading, error } = useSelector((state) => state.post);
+  const { loading, error, isApprovedPost } = useSelector((state) => state.post);
 
   const verifyPost = (id) => {
-    //  console.log("verify", id);
     dispatch(approveNewPost(id));
     dispatch(getAllPosts());
-    if (!error) {
+  };
+
+  useEffect(() => {
+    if (isApprovedPost) {
       toast({
-        description: "Xác thực thành công",
+        description: "Đã xác thực thành công",
         position: "top",
         status: "success",
+        isClosable: true,
       });
+      dispatch(setIsApprovedPost(false));
     }
-  };
+  }, [isApprovedPost]);
+
   const formatStar = (star) => {
     return star === 0 ? star : star.toFixed(1);
   };
