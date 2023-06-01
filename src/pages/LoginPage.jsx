@@ -1,11 +1,14 @@
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Flex,
   FormControl,
-  FormLabel,
   FormErrorMessage,
+  FormLabel,
   Heading,
   IconButton,
   Input,
@@ -13,20 +16,13 @@ import {
   InputRightElement,
   Text,
   useToast,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
 } from "@chakra-ui/react";
-import { Field, Form, Formik, useFormik } from "formik";
-import * as Yup from "yup";
-import axios from "axios";
+import { Field, Form, Formik } from "formik";
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import * as Yup from "yup";
 import { login } from "../redux/actions/userActions";
-import { setError } from "../redux/slices/user";
-import { isTokenExpired } from "../redux/auth/auth";
 
 const LoginPage = () => {
   const [show, setShow] = React.useState(false);
@@ -160,10 +156,10 @@ const LoginPage = () => {
 
               <Text mt={"4"} fontSize={"sm"}>
                 Chưa có tài khoản?
-                <a href="/register" style={{ color: "#0000ff" }}>
+                <Link to="/register" style={{ color: "#0000ff" }}>
                   {" "}
                   Đăng ký
-                </a>
+                </Link>
               </Text>
 
               <Button

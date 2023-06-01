@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   FormControl,
   FormLabel,
+  useDisclosure,
   Input,
   InputGroup,
   InputRightElement,
@@ -21,6 +22,14 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  Checkbox,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Field, Form, Formik } from "formik";
@@ -28,12 +37,13 @@ import axios from "axios";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { signup } from "../redux/actions/userActions";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function RegisterPage() {
   // state for view icon
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   // Hook để lấy thông tin về địa chỉ URL hiện tại
   const location = useLocation();
   const user = useSelector((state) => state.user);
@@ -302,6 +312,51 @@ function RegisterPage() {
                 )}
               </Field>
 
+              <Field name="policy">
+                {({ field, form }) => (
+                  <FormControl
+                    isRequired
+                    isInvalid={form.errors.policy && form.touched.policy}
+                    mb={"4"}
+                  >
+                    <Checkbox
+                      isChecked={form.values.policy}
+                      onChange={(e) =>
+                        form.setValues({
+                          ...form.values,
+                          policy: e.target.checked,
+                        })
+                      }
+                    >
+                      Tôi đồng ý với{" "}
+                      <Button variant={"link"} onClick={onOpen}>
+                        Điều khoản và dịch vụ
+                      </Button>
+                    </Checkbox>
+                    <Modal isOpen={isOpen} onClose={onClose}>
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader>Điều khoản</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>các chính sách như sau</ModalBody>
+
+                        <ModalFooter>
+                          <Button
+                            colorScheme="blue"
+                            bg="#f5897e"
+                            _hover={{ bg: "#f56051" }}
+                            mr={3}
+                            onClick={onClose}
+                          >
+                            Đóng
+                          </Button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </Modal>
+                    <FormErrorMessage>{form.errors.policy}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
               <Button
                 isLoading={loading}
                 type="submit"
@@ -315,10 +370,10 @@ function RegisterPage() {
               </Button>
               <Text mt={"4"} fontSize={"sm"}>
                 Đã có tài khoản?
-                <a href="/login" style={{ color: "#0000ff" }}>
+                <Link to="/login" style={{ color: "#0000ff" }}>
                   {" "}
                   Đăng Nhập
-                </a>
+                </Link>
               </Text>
             </Form>
           )}

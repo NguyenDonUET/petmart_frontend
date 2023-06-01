@@ -15,7 +15,10 @@ import TooltipIcon from "./TooltipIcon";
 import UserAccount from "./UserAccount";
 import AlertStatus from "./AlertStatus";
 import { useDispatch, useSelector } from "react-redux";
-import { approveUserAccount } from "../../redux/actions/userActions";
+import {
+  approveUserAccount,
+  getUserAccountList,
+} from "../../redux/actions/userActions";
 import { useEffect } from "react";
 
 const AdminAccountTable = ({ tableHeader, data }) => {
@@ -64,12 +67,12 @@ const AdminAccountTable = ({ tableHeader, data }) => {
                         <CheckIcon
                           boxSize={5}
                           sx={styleIcon}
-                          onClick={() => dispatch(approveUserAccount(user.id))}
+                          onClick={() => {
+                            dispatch(approveUserAccount(user.id));
+                            dispatch(getUserAccountList());
+                          }}
                         />
                       </TooltipIcon>
-                      {/* <TooltipIcon text={"Hủy xác thực"}>
-                        <CloseIcon boxSize={4} sx={styleIcon} />
-                      </TooltipIcon> */}
                       <TooltipIcon text={"Chat"}>
                         <ChatIcon boxSize={5} sx={styleIcon} />
                       </TooltipIcon>
