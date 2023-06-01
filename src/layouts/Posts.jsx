@@ -24,6 +24,7 @@ const Posts = () => {
           lg: "row",
           xl: "row",
         }}
+        gap={{ base: "0", md: "6px" }}
       >
         <FilterPosts />
         <PostList />

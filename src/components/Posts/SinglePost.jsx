@@ -84,7 +84,7 @@ function SinglePost({ post }) {
               lg: "18px",
             }}
           >
-            {title.length > 25 ? title.substr(0, 25) + "..." : title}
+            {title.length > 21 ? title.substr(0, 21) + "..." : title}
           </Link>
         </Heading>
         <HStack
@@ -111,7 +111,6 @@ function SinglePost({ post }) {
           </Box>
         </Flex>
         <Flex color={"gray.500"} alignItems={"center"} mt={"6px"}>
-          {/* <Spacer /> */}
           <Box
             fontSize={{
               base: "10px",
@@ -119,7 +118,6 @@ function SinglePost({ post }) {
               lg: "14px",
             }}
           >
-            {/* {moment(createdDate).fromNow()} */}
             {formatDate(createdDate)}
           </Box>
         </Flex>

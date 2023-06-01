@@ -32,9 +32,9 @@ const PostInformation = ({ postInfo }) => {
   } = postInfo;
   const place = `${address},  ${commune},  ${district},  ${province}`;
   return (
-    <Box my={"32px"}>
+    <Box my={"32px"} fontSize={{ base: "14px", sm: "16px" }}>
       <SubTitle>Thông tin chi tiết</SubTitle>
-      <SimpleGrid columns={2} spacing={4}>
+      <SimpleGrid columns={{ base: "1", sm: "2" }} spacing={4}>
         <Text>
           <Icon as={TfiRulerAlt} /> Cân nặng: {weight}kg
         </Text>
@@ -53,7 +53,7 @@ const PostInformation = ({ postInfo }) => {
       </SimpleGrid>
       <SubTitle>Đặc điểm nổi bật</SubTitle>
       <Text maxW={"90%"}>{description}</Text>
-      <Flex mt={"12px"} gap={3}>
+      <Flex mt={"12px"} gap={3} flexDirection={{ base: "column", sm: "row" }}>
         <Text fontWeight={"bold"}>Địa chỉ:</Text>
         <Text>{place}</Text>
       </Flex>

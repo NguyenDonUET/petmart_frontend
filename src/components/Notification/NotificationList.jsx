@@ -33,8 +33,8 @@ function NotificationList({ closeList }) {
       } else {
         dispatch(getPostById(postId));
         navigate(`/posts/${postId}`);
+        closeList();
       }
-      closeList();
     }
     if (type === "APPROVED" || type === "ADMIN") {
       dispatch(getPostById(postId));
@@ -71,7 +71,7 @@ function NotificationList({ closeList }) {
   }, []);
 
   return (
-    <List spacing={3} padding={"8px"}>
+    <List spacing={3} padding={"8px"} size={"sm"}>
       {notifications && notifications.length <= 0 && (
         <Text textAlign={"center"}>Bạn chưa có thông báo nào cả.</Text>
       )}

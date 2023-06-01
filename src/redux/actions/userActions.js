@@ -63,6 +63,7 @@ export const getUserAccountList = () => async (dispatch, getState) => {
       config
     );
     const { users } = data;
+    console.log("🚀 ~ users:", users);
     dispatch(setShowUserList(users));
     dispatch(setUserList(users));
     console.log("lấy ds user account");

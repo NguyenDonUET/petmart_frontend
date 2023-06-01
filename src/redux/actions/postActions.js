@@ -39,7 +39,7 @@ export const getAllPosts = () => async (dispatch) => {
       config
     );
     const { posts, totalPosts } = data;
-    // console.log(posts);
+    console.log("🚀 ~ posts:", posts);
     dispatch(setShowAdminPostList(posts));
     dispatch(setAdminPostList(posts));
 

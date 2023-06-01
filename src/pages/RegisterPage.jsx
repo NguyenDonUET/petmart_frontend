@@ -129,7 +129,16 @@ function RegisterPage() {
 
   return (
     <Flex justifyContent={"center"} alignItems={"center"}>
-      <Box width={"40%"} m={"3"}>
+      <Box
+        className="RegisterBox"
+        w={{
+          base: "80%",
+          sm: "70%",
+          md: "500px",
+        }}
+        m={"3"}
+        mt={{ base: "8", md: "3" }}
+      >
         <Heading
           color={"#f5897e"}
           as={"h1"}
@@ -238,10 +247,20 @@ function RegisterPage() {
                         })
                       }
                     >
-                      <HStack spacing={"100px"}>
+                      <Box
+                        className="roleRadioButton"
+                        display={{ base: "flex" }}
+                        flexDirection={{ base: "column", md: "row" }}
+                      >
                         <Radio value="buyer">Người mua</Radio>
-                        <Radio value="seller">Người bán</Radio>
-                      </HStack>
+                        <Radio
+                          className="roleRadioButton__seller"
+                          value="seller"
+                          ml={{ md: "100px" }}
+                        >
+                          Người bán
+                        </Radio>
+                      </Box>
                     </RadioGroup>
                     <FormErrorMessage>{form.errors.role}</FormErrorMessage>
                   </FormControl>
@@ -342,7 +361,11 @@ function RegisterPage() {
                         Điều khoản và dịch vụ
                       </Button>
                     </Checkbox>
-                    <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
+                    <Modal
+                      isOpen={isOpen}
+                      onClose={onClose}
+                      size={{ base: "sm", md: "xl" }}
+                    >
                       <ModalOverlay />
                       <ModalContent>
                         <ModalHeader>Điều khoản</ModalHeader>

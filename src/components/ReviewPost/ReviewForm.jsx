@@ -68,6 +68,7 @@ const ReviewForm = ({ isOpen, onClose }) => {
   return (
     <>
       <Modal
+        size={{ base: "sm", md: "xl" }}
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isOpen}

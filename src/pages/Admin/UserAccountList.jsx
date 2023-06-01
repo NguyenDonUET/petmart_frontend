@@ -87,17 +87,9 @@ const UserAccountList = () => {
           {error && (
             <Alert status="error">
               <AlertIcon />
-              <AlertTitle>Your browser is outdated!</AlertTitle>
+              <AlertTitle>{error}</AlertTitle>
             </Alert>
           )}
-          {/* <Heading
-                  fontSize={"3xl"}
-                  ml={6}
-                  color={"#453227"}
-                  fontStyle={"italic"}
-               >
-                  Danh sách người dùng
-               </Heading> */}
           <Tabs
             padding={3}
             onChange={(index) => updateUserList(index)}

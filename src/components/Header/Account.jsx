@@ -86,7 +86,9 @@ const Account = () => {
           <Avatar boxSize={8}>
             {userInfo && <AvatarBadge boxSize="18px" bg="green.500" />}
           </Avatar>
-          <Text>{userInfo ? userInfo.user.username : "Tài khoản"}</Text>
+          <Text display={{ base: "none", md: "block" }}>
+            {userInfo ? userInfo.user.username : "Tài khoản"}
+          </Text>
         </HStack>
       </MenuButton>
       <Portal>

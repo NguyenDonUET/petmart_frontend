@@ -57,7 +57,7 @@ const AdminPostList = () => {
   }, []);
 
   return (
-    <Box marginX={8} paddingTop={5} height={"calc(100vh - 76px)"}>
+    <Box marginX={8} paddingTop={5}>
       <Tabs
         padding={3}
         bgColor={"white"}

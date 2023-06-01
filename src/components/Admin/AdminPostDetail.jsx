@@ -67,6 +67,7 @@ const AdminPostDetail = () => {
       dispatch(setIsApprovedPost(false));
     }
   }, [error, isApprovedPost]);
+
   useEffect(() => {
     if (singlePost) {
       // console.log("🚀 ~ singlePost:", singlePost);

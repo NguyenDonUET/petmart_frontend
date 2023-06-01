@@ -29,6 +29,7 @@ const Footer = () => {
             lg: "repeat(4, 1fr)",
           }}
           gap={"20px"}
+          fontSize={{ base: "14px", sm: "18px" }}
         >
           <GridItem>
             <Heading as={"h4"} fontSize={"18px"} mb="8px">

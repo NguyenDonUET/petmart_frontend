@@ -70,9 +70,14 @@ const PostRatingOverview = () => {
       padding={"24px"}
       bgColor={"pink.50"}
       border={"1px solid #f9ede5"}
+      flexWrap={{ base: "wrap", sm: "nowrap" }}
     >
       <Flex pl={"12px"} alignItems={"center"} gap={"4px"}>
-        <Text fontWeight={"600"} fontSize={"20px"} color={"#ee4d2d"}>
+        <Text
+          fontWeight={"600"}
+          fontSize={{ base: "14px", sm: "18px" }}
+          color={"#ee4d2d"}
+        >
           {" "}
           <Text as={"span"} fontSize={"26px"}>
             {star.toFixed(1) || 0}
@@ -85,6 +90,7 @@ const PostRatingOverview = () => {
         {ratingSelections.map((rating) => {
           return (
             <Button
+              size={{ base: "xs", sm: "md" }}
               key={rating.id}
               bgColor={"white"}
               fontWeight={"400"}

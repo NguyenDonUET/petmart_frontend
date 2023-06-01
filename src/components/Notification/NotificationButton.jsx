@@ -92,7 +92,7 @@ export default function NotificationButton() {
           className="notification"
           position="absolute"
           top="100%"
-          right="0"
+          right={{ base: "-300%", md: "0" }}
           zIndex="2"
           bg="white"
           boxShadow="xl"
