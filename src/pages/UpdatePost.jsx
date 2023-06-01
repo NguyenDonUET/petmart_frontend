@@ -138,6 +138,7 @@ const UpdatePost = () => {
   let postInfo = null;
   let author = null;
   let images = [];
+  let defaultEndDate = null;
   // let defaultFiles = [];
 
   if (singlePost) {
@@ -150,7 +151,7 @@ const UpdatePost = () => {
      */
     let defaultProvince = singlePost.post.province;
     let defaultDistrict = singlePost.post.district;
-    let defaultEndDate = singlePost.post.endDate;
+    defaultEndDate = new Date(singlePost.post.endDate);
     let defaultDate = moment().add(7, "days").toDate();
 
     let sampleProvince = province.find((p) => p.Name === defaultProvince);
@@ -270,7 +271,14 @@ const UpdatePost = () => {
       {error && <Text>{error}</Text>}
       {!loading && postInfo && (
         <Flex justifyContent={"center"}>
-          <Box width={"40%"} m={"3"}>
+          <Box
+            w={{
+              base: '80%',
+              sm: '70%',
+              md: '500px',
+            }}
+            m={"3"}
+          >
             <Heading
               color={"#f5897e"}
               as={"h1"}
@@ -454,10 +462,19 @@ const UpdatePost = () => {
                             form.setValues({ ...form.values, gender: value })
                           }
                         >
-                          <Radio value="Đực">Giống đực</Radio>
-                          <Radio value="Cái" pl={"30%"}>
-                            Giống cái
-                          </Radio>
+                          <Box
+                            display={'flex'}
+                            flexDirection={{
+                              base: 'column',
+                              sm: 'column',
+                              md: 'row',
+                            }}
+                          >
+                            <Radio value="Đực">Giống đực</Radio>
+                            <Radio value="Cái" pl={{ md: "30%" }}>
+                              Giống cái
+                            </Radio>
+                          </Box>
                         </RadioGroup>
                         <FormErrorMessage>
                           {form.errors.gender}
@@ -596,10 +613,19 @@ const UpdatePost = () => {
                             });
                           }}
                         >
-                          <Radio value={true}>Đã tiêm chủng</Radio>
-                          <Radio value={false} pl={"30%"}>
-                            Chưa tiêm chủng
-                          </Radio>
+                          <Box
+                            display={'flex'}
+                            flexDirection={{
+                              base: 'column',
+                              sm: 'column',
+                              md: 'row'
+                            }}
+                          >
+                            <Radio value={true}>Đã tiêm chủng</Radio>
+                            <Radio value={false} pl={{ md: "30%" }}>
+                              Chưa tiêm chủng
+                            </Radio>
+                          </Box>
                         </RadioGroup>
                         <FormErrorMessage>
                           {form.errors.vaccination}
@@ -632,7 +658,10 @@ const UpdatePost = () => {
 
                   <FormLabel>Địa chỉ hiển thị</FormLabel>
 
-                  <Grid templateColumns={"repeat(3, 1fr)"} gap={4}>
+                  <Grid 
+                    templateColumns={{ lg: "repeat(3, 1fr)" }}
+                    gap={{ lg: '4' }}
+                  >
                     <GridItem>
                       <Field name="province">
                         {({ field, form }) => (
@@ -645,7 +674,7 @@ const UpdatePost = () => {
                             <FormLabel></FormLabel>
                             <Select
                               placeholder="Chọn tỉnh thành"
-                              //defaultValue={`${postInfo.province}`}
+                              defaultValue={`${postInfo.province}`}
                               onChange={(e) => {
                                 handleProvinceChange(e, postInfo.province);
                                 form.setValues({
@@ -684,7 +713,7 @@ const UpdatePost = () => {
                             <FormLabel></FormLabel>
                             <Select
                               placeholder="Chọn quận huyện"
-                              //defaultValue={`${postInfo.district}`}
+                              defaultValue={`${postInfo.district}`}
                               onChange={(e) => {
                                 handleDistrictChange(e);
                                 form.setValues({
@@ -697,8 +726,8 @@ const UpdatePost = () => {
                                 <option
                                   key={c.Id}
                                   value={c.Name}
-                                  // selected={postInfo.district == c.Name}
-                                  defaultValue={postInfo.district == c.Name}
+                                // selected={postInfo.district == c.Name}
+                                //defaultValue={postInfo.district == c.Name}
                                 >
                                   {c.Name}
                                 </option>
@@ -724,7 +753,7 @@ const UpdatePost = () => {
                             <FormLabel></FormLabel>
                             <Select
                               placeholder="Chọn phường xã"
-                              //defaultValue={`${postInfo.commune}`}
+                              defaultValue={`${postInfo.commune}`}
                               onChange={(e) =>
                                 form.setValues({
                                   ...form.values,
@@ -736,8 +765,8 @@ const UpdatePost = () => {
                                 <option
                                   key={c.Id}
                                   value={c.Name}
-                                  defaultValue={postInfo.commune == c.Name}
-                                  // selected={postInfo.commune == c.Name}
+                                //defaultValue={postInfo.commune == c.Name}
+                                // selected={postInfo.commune == c.Name}
                                 >
                                   {c.Name}
                                 </option>
@@ -781,7 +810,7 @@ const UpdatePost = () => {
                         <FormLabel>Thời gian kết thúc hiển thị</FormLabel>
                         <DatePicker
                           disabled
-                          selected={endDatee}
+                          selected={defaultEndDate}
                           onSelect={handleEndDateSelect}
                           onChange={(date) => {
                             handleEndDateeChange(date);

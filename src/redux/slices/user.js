@@ -47,7 +47,7 @@ export const userSlice = createSlice({
       state.loading = false;
     },
     userSignup: (state, { payload }) => {
-      state.userInfo = payload;
+      //state.userInfo = payload;
       state.error = null;
       state.loading = false;
     },

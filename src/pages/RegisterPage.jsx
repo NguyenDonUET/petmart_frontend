@@ -64,6 +64,13 @@ function RegisterPage() {
 
   const handleSignup = (values) => {
     dispatch(signup(values));
+    toast({
+      description: "Đăng ký thành công. Xin vui lòng đăng nhập để sử dụng.",
+      status: "success",
+      isClosable: true,
+      position: "top",
+    });
+    navigate(redirectToLogin);
   };
 
   useEffect(() => {
