@@ -108,7 +108,11 @@ function FilesDropzone({ className, onUploaded, defaultFiles, ...rest }) {
               {files.map((file, i) => (
                 <ListItem key={i}>
                   {/* <Image boxSize={'200px'} src={}/> */}
-                  <Grid templateColumns={"repeat(4, 1fr)"} gap={"4"}>
+                  <Grid
+                    fontSize={{ base: "12px", sm: "xl" }}
+                    templateColumns={{ base: "repeat(4, 1fr)" }}
+                    gap={"4"}
+                  >
                     <GridItem>
                       <Image
                         boxSize={"100px"}

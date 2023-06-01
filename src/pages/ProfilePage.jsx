@@ -99,7 +99,8 @@ const ProfilePage = () => {
       (post) => moment(post.endDate).diff(moment(), "days") < 0
     );
     newCreatedPostList = createdPostList.filter(
-      (post) => moment(post.endDate).diff(moment(), "days") >= 0
+      (post) =>
+        moment(post.endDate).diff(moment(), "days") >= 0 && post.available
     );
     sold = createdPostList.filter((post) => post.available == false);
   }

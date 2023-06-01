@@ -40,7 +40,13 @@ import LikeButton from "../components/Posts/LikeButton.jsx";
 import RatingSystem from "../components/Rating/RatingSystem.jsx";
 import PostInformation from "../layouts/ProductReviews/PostInformation.jsx";
 import PostReviews from "../layouts/ProductReviews/PostReviews.jsx";
-import { extendPost, getPostById } from "../redux/actions/postActions.js";
+// import { extendPost, getPostById } from "../redux/actions/postActions.js";
+import {
+  extendPost,
+  getPostById,
+  availablePost,
+} from "../redux/actions/postActions.js";
+
 import numberWithCommas from "../utils/numberWithCommas.js";
 import LoadingList from "../components/Admin/LoadingList.jsx";
 import { EditIcon, CalendarIcon } from "@chakra-ui/icons";
@@ -61,7 +67,7 @@ const PostDetail = () => {
 
   const dispatch = useDispatch();
   const post = useSelector((state) => state.post);
-  const { loading, error, singlePost, reviews, countRating } = post;
+  const { loading, error, singlePost, reviews, countRating, available } = post;
   const user = useSelector((state) => state.user);
   const { userInfo } = user;
   const navigate = useNavigate();
@@ -126,12 +132,53 @@ const PostDetail = () => {
     setExtendDate(date);
   };
 
+  const handleAvailablePost = (values) => {
+    console.log(id);
+    dispatch(availablePost(values.pid));
+    //dispatch(getPostById(values.pid));
+    toast({
+      description: "Cập nhật đã bán thành công.",
+      status: "success",
+      isClosable: true,
+      position: "top",
+    });
+    navigate("/");
+  };
   return (
     <>
       {loading && <LoadingList />}
       {error && <Heading textAlign={"center"}>{error}</Heading>}
       {!loading && postInfo && (
         <Box width={{ lg: "80%" }} mx={"auto"} padding={8} my={"32px"}>
+          {singlePost &&
+            userInfo &&
+            (userInfo.user.role === "admin" ||
+              userInfo.user.id === creator.id) && (
+              <Flex justifyContent={"end"}>
+                <Formik
+                  initialValues={{
+                    pid: singlePost.post.id,
+                  }}
+                  onSubmit={handleAvailablePost}
+                >
+                  {(props) => (
+                    <Form>
+                      <Button
+                        type="submit"
+                        isDisabled={!singlePost.post.available}
+                        mb={3}
+                        bgColor={"green"}
+                        color={"white"}
+                        _hover={{ backgroundColor: "green.400" }}
+                        fontSize={{ base: "14px", sm: "16px" }}
+                      >
+                        Đã bán
+                      </Button>
+                    </Form>
+                  )}
+                </Formik>
+              </Flex>
+            )}
           <Flex gap={8} flexDirection={{ base: "column", md: "row" }}>
             <PostImages images={postInfo.images} />
             <Box width={{ lg: "48%" }}>

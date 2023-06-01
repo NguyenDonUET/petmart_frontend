@@ -143,7 +143,7 @@ const CreatePost = () => {
       userInfo.user.isApproved ? (
         <Box
           width={{
-            base: "100%",
+            base: "80%",
             sm: "70%",
             md: "500px",
           }}

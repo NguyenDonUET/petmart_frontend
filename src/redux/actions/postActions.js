@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
   setAdminPostList,
+  setAvailable,
   setCountRating,
   setCreatedPostList,
   setCreator,
@@ -585,5 +586,30 @@ export const extendPost = (extendDate) => async (dispatch, getState) => {
     //       : "An unexpected error has occured. Please try again later."
     //   )
     // );
+  }
+};
+
+// Xử lý đã bán
+export const availablePost = (id) => async (dispatch, getState) => {
+  const {
+    user: { userInfo },
+  } = getState();
+  console.log("availablePost");
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.patch(
+      `${import.meta.env.VITE_BASE_URL}/api/posts/${id}/available`,
+      {},
+      config
+    );
+    dispatch(setAvailable(false));
+    console.log("🚀 ~ đã bán:", data);
+  } catch (error) {
+    console.log("🚀 ~ error:", error);
   }
 };
