@@ -126,7 +126,7 @@ export const signup = (newUser) => async (dispatch) => {
       newUser,
       config
     );
-
+    localStorage.setItem("userInfo", JSON.stringify(data));
     dispatch(userSignup(data));
     console.log("đăng ký");
   } catch (error) {

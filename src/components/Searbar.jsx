@@ -33,14 +33,6 @@ const Searbar = () => {
         border={"none"}
         onChange={(e) => setSearchVal(e.target.value)}
       ></Input>
-      {/* <IconButton
-        colorScheme="blue"
-        variant={"ghost"}
-        aria-label="Search database"
-        icon={<SearchIcon />}
-        onClick={handleSearch}
-      /> */}
-      {/* <Button colorScheme="teal">Tìm kiếm</Button> */}
     </HStack>
   );
 };

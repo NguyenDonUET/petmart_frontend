@@ -10,13 +10,15 @@ import {
 import React, { useEffect, useState } from "react";
 import TotalPosts from "./TotalPosts";
 import { useDispatch } from "react-redux";
-import { sortShowPostList } from "../../redux/actions/postActions";
+import { getPosts, sortShowPostList } from "../../redux/actions/postActions";
+import { createFilterQuery } from "../../utils/createFilterQuery";
+import { setSortQuery } from "../../redux/slices/post";
 const sortBy = [
-  { text: "Ngày đăng (mới đến cũ)", value: "desc", property: "createdDate" },
-  { text: "Ngày đăng (cũ đến mới)", value: "asc", property: "createdDate" },
-  { text: "Giá (tăng dần)", value: "asc", property: "price" },
+  { text: "Ngày đăng (mới đến cũ)", value: "", property: "" },
+  // { text: "Ngày đăng (cũ đến mới)", value: "desc", property: "createdDate" },
   { text: "Giá (giảm dần)", value: "desc", property: "price" },
-  { text: "Lượt xem (tăng dần)", value: "asc", property: "views" },
+  // { text: "Giá (giảm dần)", value: "desc", property: "price" },
+  { text: "Lượt đánh giá (giảm dần)", value: "desc", property: "star" },
   { text: "Lượt xem (giảm dần)", value: "desc", property: "views" },
 ];
 const SortPosts = () => {
@@ -27,13 +29,24 @@ const SortPosts = () => {
   };
 
   useEffect(() => {
-    dispatch(
-      sortShowPostList({
-        prop: sortBy[selectVal].property,
-        value: sortBy[selectVal].value,
-      })
-    );
+    let sb = sortBy[selectVal].property.length;
+    console.log("🚀 ~ sb:", sb);
+    let ob = sortBy[selectVal].value.length;
+    console.log("🚀 ~ ob:", ob);
+    let newSortQuery = `&orderBy=${sortBy[selectVal].property}&order=${sortBy[selectVal].value}`;
+    if (sb.length === 0 || ob.length === 0) {
+      newSortQuery = "";
+      console.log("empty");
+    }
+    console.log("🚀 ~ newSortQuery:", newSortQuery);
+    // console.log("🚀 ~ sortQuery:", newSortQuery);
+    dispatch(setSortQuery(newSortQuery));
+    dispatch(getPosts());
   }, [selectVal]);
+
+  useEffect(() => {
+    dispatch(setSortQuery(""));
+  }, []);
 
   return (
     <Flex alignItems={"center"} justifyContent={"space-between"} mb={"10px"}>

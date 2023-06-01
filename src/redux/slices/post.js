@@ -23,6 +23,7 @@ export const initialState = {
   showReviewList: [],
   countRating: [],
   isApprovedPost: false,
+  sortQuery: "",
   loadingApprovePost: false,
 };
 
@@ -71,6 +72,11 @@ export const postSlice = createSlice({
     },
     setFilterParams: (state, { payload }) => {
       state.filterParams = payload;
+      state.error = null;
+      state.loading = false;
+    },
+    setSortQuery: (state, { payload }) => {
+      state.sortQuery = payload;
       state.error = null;
       state.loading = false;
     },
@@ -158,6 +164,7 @@ export const {
   setIsApprovedPost,
   setLoadingApprovePost,
   setIsUpdated,
+  setSortQuery,
 } = postSlice.actions;
 
 export default postSlice.reducer;

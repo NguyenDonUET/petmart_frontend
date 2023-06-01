@@ -19,7 +19,6 @@ const Pagination = ({ itemsPerPage }) => {
     const newOffset = (event.selected * itemsPerPage) % postsCount;
     console.log("trang: ", event.selected + 1);
     setCurrentPage(event.selected + 1);
-    //  setItemOffset(newOffset);
   };
 
   useEffect(() => {

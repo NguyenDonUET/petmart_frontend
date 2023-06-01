@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Icon } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Icon, Input } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
@@ -58,12 +58,14 @@ const filterCategory = [
 const FilterPosts = () => {
   const [query, setQuery] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchVal, setSearchVal] = useState("");
   const { search } = useLocation();
   const dispatch = useDispatch();
   const post = useSelector((state) => state.post);
   const { loading, error, postList, filterParams } = post;
 
   const updateParams = (param) => {
+    console.log("🚀 ~ param:", param);
     setQuery((prev) => [...prev, param]);
   };
 
@@ -72,6 +74,7 @@ const FilterPosts = () => {
     let newParams = query.reduce((result, currentObj) => {
       return { ...result, ...currentObj };
     }, {});
+    // đổi params trên url
     setSearchParams(newParams);
   };
 
@@ -90,17 +93,11 @@ const FilterPosts = () => {
       // XÓA những value là undefined trên URL
       setSearchParams(newParams);
       const filters = createFilterQuery(newParams);
-      // console.log(filters);
+      console.log("FilterParams", filters);
       dispatch(setFilterParams(filters));
       dispatch(getPosts());
     }
   }, [searchParams]);
-
-  useEffect(() => {
-    const filters = createFilterQuery(decodeParams(search));
-    dispatch(setFilterParams(filters));
-    dispatch(getPosts());
-  }, []);
 
   return (
     <Box
@@ -109,8 +106,23 @@ const FilterPosts = () => {
       mb={{ base: "10px" }}
     >
       <Flex flexDirection={"column"} gap={"16px"}>
+        {/* Search bar */}
         <Box>
-          <Searbar />
+          <HStack>
+            <Input
+              bgColor={"gray.50"}
+              borderRadius={"md"}
+              width={"80%"}
+              type="text"
+              placeholder="Nhập tên thú nuôi"
+              border={"none"}
+              onChange={(e) =>
+                updateParams({
+                  q: e.target.value,
+                })
+              }
+            ></Input>
+          </HStack>
         </Box>
         {filterCategory.map((category, index) => {
           return (

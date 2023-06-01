@@ -11,6 +11,7 @@ const PostList = () => {
   const post = useSelector((state) => state.post);
   const { loading, error, showPostList, postsCount } = post;
 
+  // update
   useEffect(() => {
     dispatch(getPosts());
   }, []);

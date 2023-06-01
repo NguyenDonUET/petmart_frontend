@@ -53,7 +53,6 @@ function RegisterPage() {
   const dispatch = useDispatch();
   const toast = useToast();
   const navigate = useNavigate();
-  const redirectToLogin = "/login";
   const handlePassword = () => {
     setShowPassword(!showPassword);
   };
@@ -64,6 +63,7 @@ function RegisterPage() {
 
   const handleSignup = (values) => {
     dispatch(signup(values));
+    navigate("/");
   };
 
   useEffect(() => {

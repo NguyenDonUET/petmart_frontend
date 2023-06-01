@@ -64,28 +64,30 @@ export const sortShowPostList = (sortBy) => async (dispatch, getState) => {
   if (!postList && !showPostList) return;
 
   const { prop, value } = sortBy;
+  console.log("🚀 ~ sortBy:", sortBy);
+
   // giảm dần b[prop] - a[prop]
   // tăng dần a[prop] - b[prop]
-  let sortedPosts = [];
-  if (prop !== "createdDate") {
-    if (value === "desc") {
-      sortedPosts = [...postList].sort((a, b) => b[prop] - a[prop]);
-    } else {
-      sortedPosts = [...postList].sort((a, b) => a[prop] - b[prop]);
-    }
-  } else {
-    if (value === "desc") {
-      sortedPosts = [...postList].sort(
-        (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
-      );
-    } else {
-      sortedPosts = [...postList].sort(
-        (a, b) => new Date(a.createdDate) - new Date(b.createdDate)
-      );
-    }
-  }
+  // let sortedPosts = [];
+  // if (prop !== "createdDate") {
+  //   if (value === "desc") {
+  //     sortedPosts = [...postList].sort((a, b) => b[prop] - a[prop]);
+  //   } else {
+  //     sortedPosts = [...postList].sort((a, b) => a[prop] - b[prop]);
+  //   }
+  // } else {
+  //   if (value === "desc") {
+  //     sortedPosts = [...postList].sort(
+  //       (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+  //     );
+  //   } else {
+  //     sortedPosts = [...postList].sort(
+  //       (a, b) => new Date(a.createdDate) - new Date(b.createdDate)
+  //     );
+  //   }
+  // }
   //   console.log(sortedPosts);
-  dispatch(setShowPostList(sortedPosts));
+  // dispatch(setShowPostList(sortedPosts));
 };
 
 export const filterPosts = (filterParams) => async (dispatch) => {
@@ -124,7 +126,7 @@ export const getPosts =
   (currentPage = 1) =>
   async (dispatch, getState) => {
     const {
-      post: { filterParams },
+      post: { filterParams, sortQuery },
     } = getState();
     dispatch(setLoading(true));
     try {
@@ -133,24 +135,27 @@ export const getPosts =
           "Content-Type": "application/json",
         },
       };
-      // console.log(filterParams);
-      // console.log(currentPage);
-
+      console.log("currentPage", currentPage);
+      console.log(
+        `get /api/posts/?${filterParams}${sortQuery}${
+          filterParams || sortQuery ? "&" : ""
+        }page=${currentPage}`
+      );
       const { data } = await axios.get(
         `${
           import.meta.env.VITE_BASE_URL
-        }/api/posts/?${filterParams}&page=${currentPage}`,
+        }/api/posts/?${filterParams}${sortQuery}&page=${currentPage}`,
         config
       );
       const { totalPosts, posts } = data;
-      console.log(`/api/posts/?${filterParams}&page=${currentPage}`);
+      // console.log(`/api/posts/?${filterParams}&page=${currentPage}`);
       // console.log(posts);
       // cập nhật tổng số bài đăng
       // console.log(data);
       dispatch(setPostsCount(totalPosts));
       dispatch(setShowPostList(posts));
       dispatch(setPostList(posts));
-      // console.log("lấy posts");
+      console.log("lấy posts");
     } catch (error) {
       console.log("Lỗi khi lọc posts");
       dispatch(
