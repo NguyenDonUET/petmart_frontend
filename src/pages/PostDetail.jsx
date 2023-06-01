@@ -98,7 +98,7 @@ const PostDetail = () => {
   }, [error]);
 
   useEffect(() => {
-    console.log("🚀 ~ isSubmitExtend:", isSubmitExtend);
+    // console.log("🚀 ~ isSubmitExtend:", isSubmitExtend);
     if (isSubmitExtend) {
       toast({
         description: "Đã gửi yêu cầu gia hạn cho admin",
@@ -186,7 +186,7 @@ const PostDetail = () => {
                 <Flex height={"32px"} gap="10px" alignItems={"center"}>
                   <Flex>
                     <Text mr={"4px"} color={"pink.500"}>
-                      {postInfo.star && postInfo.star.toFixed(2).toString()}
+                      {postInfo.star && postInfo.star.toFixed(1).toString()}
                     </Text>
                     <RatingSystem rating={postInfo.star} />
                   </Flex>

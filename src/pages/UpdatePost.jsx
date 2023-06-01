@@ -49,9 +49,11 @@ import moment from "moment";
 import FilesDropzone from "../components/Posts/FilesDropzone";
 import { editPost, getPostById } from "../redux/actions/postActions";
 import { speciesGenre } from "./gen";
-import { setUpdateLoading } from "../redux/slices/post";
+import { setIsUpdated, setUpdateLoading } from "../redux/slices/post";
+import LoadingList from "../components/Admin/LoadingList";
 
 const UpdatePost = () => {
+  const [newPost, setNewPost] = useState(null);
   const [province, setProvince] = useState([]);
   const [district, setDistrict] = useState([]);
   const [commune, setCommune] = useState([]);
@@ -64,57 +66,79 @@ const UpdatePost = () => {
   const { id: postId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // lấy post
   const post = useSelector((state) => state.post);
-  // lấy user hiện tại
-
-  const user = useSelector((state) => state.user);
+  const { loading, error, singlePost, updateLoading, isUpdated } = post;
 
   // lấy id bài viết từ đường dẫn /posts/update/:id
   const { id } = useParams();
 
-  // tạo các đối tượng
-  const { userInfo } = user;
-  const { loading, error, singlePost, updateLoading, updateError } = post;
-
+  // Load tên tỉnh thành vào province
   useEffect(() => {
-    // load tên tỉnh thành vào province
     const fetchProvince = async () => {
       const result = await axios.get(
         "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json"
       );
       setProvince(result.data);
     };
-    fetchProvince();
-    console.log("lấy tỉnh");
     dispatch(getPostById(id));
+    fetchProvince();
+  }, []);
 
-    if (singlePost) {
-      console.log(singlePost);
-      images = singlePost.post.images;
-      for (let i = 0; i < images.length; i++) {
+  // Xử lý load ảnh
+  async function fetchImages(images) {
+    let files = [];
+    for (let i = 0; i < images.length; i++) {
+      try {
+        let res = await fetch(images[i]);
+        let blob = await res.blob();
         let substring = images[i].split("/");
         let name = substring[substring.length - 1];
-        fetch(images[i])
-          .then((res) => res.blob())
-          .then((blob) => {
-            let objectURL = URL.createObjectURL(blob);
-            let file = new File([blob], name, { type: blob.type });
-            file.preview = objectURL;
-            defaultFiles.push(file);
-            setFiles((prevFiles) => {
-              return prevFiles.concat(file);
-            });
-          });
-        console.log(defaultFiles);
+        let objectURL = URL.createObjectURL(blob);
+        let file = new File([blob], name, { type: blob.type });
+        file.preview = objectURL;
+        files.push(file);
+      } catch (err) {
+        console.log(err);
       }
     }
-  }, []);
+    return files;
+  }
+  useEffect(() => {
+    if (singlePost) {
+      fetchImages(singlePost.post.images).then((files) => {
+        console.log("🚀 ~ files:", files);
+        setFiles(files);
+      });
+    }
+  }, [singlePost]);
+  console.log("rerender", files);
+  // useEffect(() => {
+  //   if (singlePost) {
+  //     setFiles([]);
+  //     images = singlePost.post.images;
+  //     for (let i = 0; i < images.length; i++) {
+  //       let substring = images[i].split("/");
+  //       let name = substring[substring.length - 1];
+  //       fetch(images[i])
+  //         .then((res) => res.blob())
+  //         .then((blob) => {
+  //           let objectURL = URL.createObjectURL(blob);
+  //           let file = new File([blob], name, { type: blob.type });
+  //           file.preview = objectURL;
+  //           console.log("image", file);
+  //           // defaultFiles.push(file);
+  //           setFiles((prevFiles) => {
+  //             return prevFiles.concat(file);
+  //           });
+  //         });
+  //     }
+  //   }
+  // }, [singlePost]);
 
   let postInfo = null;
   let author = null;
   let images = [];
-  let defaultFiles = [];
+  // let defaultFiles = [];
 
   if (singlePost) {
     postInfo = singlePost.post;
@@ -210,17 +234,9 @@ const UpdatePost = () => {
       .required("Vui lòng đăng ảnh minh họa"),
   });
 
-  const handleSubmit = (values) => {
-    dispatch(editPost(postId, values));
-    if (!updateLoading) {
-      toast({
-        description: "Sửa bài thành công",
-        status: "success",
-        position: "top",
-        isClosable: true,
-      });
-    }
-    navigate(`/posts/${postId}`);
+  const handleUpdatePost = () => {
+    // console.log("🚀 ~ newPost:", newPost);
+    dispatch(editPost(postId, newPost));
   };
 
   useEffect(() => {
@@ -232,11 +248,25 @@ const UpdatePost = () => {
         isClosable: true,
       });
     }
-  }, [updateError, updateLoading]);
+    if (isUpdated && !error) {
+      toast({
+        description: "Sửa bài thành công",
+        status: "success",
+        position: "top",
+        isClosable: true,
+      });
+      dispatch(setIsUpdated(false));
+      navigate(`/posts/${postId}`);
+    }
+    // console.log("isUpdated", isUpdated);
+  }, [error, isUpdated]);
 
+  useEffect(() => {
+    dispatch(setUpdateLoading(false));
+  }, []);
   return (
     <>
-      {loading && <Text>Loading...</Text>}
+      {loading && <LoadingList />}
       {error && <Text>{error}</Text>}
       {!loading && postInfo && (
         <Flex justifyContent={"center"}>
@@ -274,7 +304,7 @@ const UpdatePost = () => {
                 values,
                 { setErrors, setStatus, setSubmitting }
               ) => {
-                handleSubmit(values);
+                setNewPost(values);
               }}
               validationSchema={validationSchema}
             >
@@ -628,7 +658,7 @@ const UpdatePost = () => {
                                 <option
                                   key={c.Id}
                                   value={c.Name}
-                                  selected={postInfo.province == c.Name}
+                                  defaultValue={postInfo.province == c.Name}
                                 >
                                   {c.Name}
                                 </option>
@@ -667,7 +697,8 @@ const UpdatePost = () => {
                                 <option
                                   key={c.Id}
                                   value={c.Name}
-                                  selected={postInfo.district == c.Name}
+                                  // selected={postInfo.district == c.Name}
+                                  defaultValue={postInfo.district == c.Name}
                                 >
                                   {c.Name}
                                 </option>
@@ -705,7 +736,8 @@ const UpdatePost = () => {
                                 <option
                                   key={c.Id}
                                   value={c.Name}
-                                  selected={postInfo.commune == c.Name}
+                                  defaultValue={postInfo.commune == c.Name}
+                                  // selected={postInfo.commune == c.Name}
                                 >
                                   {c.Name}
                                 </option>
@@ -791,8 +823,11 @@ const UpdatePost = () => {
                   </Field>
 
                   <Button
-                    //type="submit"
-                    onClick={onOpen}
+                    // type="submit"
+                    onClick={() => {
+                      onOpen();
+                      setNewPost(values);
+                    }}
                     mt={4}
                     colorScheme="blue"
                     bg="#f5897e"
@@ -832,8 +867,8 @@ const UpdatePost = () => {
                           mr={3}
                           bg="#f5897e"
                           _hover={{ bg: "#f56051" }}
-                          onClick={onClose}
                           form="updatePost"
+                          onClick={() => handleUpdatePost()}
                         >
                           Xác nhận
                         </Button>

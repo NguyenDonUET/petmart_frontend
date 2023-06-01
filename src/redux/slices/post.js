@@ -16,6 +16,7 @@ export const initialState = {
   favouritePostList: null,
   postForNotification: null,
   updateLoading: false,
+  isUpdated: false,
   updateError: null,
   isReview: false,
   reviews: [],
@@ -34,6 +35,10 @@ export const postSlice = createSlice({
     },
     setUpdateLoading: (state, { payload }) => {
       state.updateLoading = payload;
+    },
+    setIsUpdated: (state, { payload }) => {
+      state.isUpdated = payload;
+      state.updateLoading = false;
     },
     setUpdateError: (state, { payload }) => {
       state.updateError = payload;
@@ -152,6 +157,7 @@ export const {
   setShowReviewList,
   setIsApprovedPost,
   setLoadingApprovePost,
+  setIsUpdated,
 } = postSlice.actions;
 
 export default postSlice.reducer;

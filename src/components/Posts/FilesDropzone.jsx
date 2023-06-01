@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import axios from "axios";
@@ -24,6 +24,7 @@ import { AddIcon, CopyIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import bytesToSize from "../../utils/byteToSize";
 
 function FilesDropzone({ className, onUploaded, defaultFiles, ...rest }) {
+  // console.log("reload FilesDropzone", defaultFiles);
   const toast = useToast();
   const [files, setFiles] = useState(defaultFiles);
 
@@ -39,6 +40,11 @@ function FilesDropzone({ className, onUploaded, defaultFiles, ...rest }) {
   const handleRemoveAll = () => {
     setFiles([]);
   };
+
+  // khi reload lại UpdatePost thì update lại image files
+  useEffect(() => {
+    setFiles(defaultFiles);
+  }, [defaultFiles]);
 
   const handleUpload = () => {
     const images = [];

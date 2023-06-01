@@ -63,6 +63,7 @@ const PostRatingOverview = () => {
   useEffect(() => {
     setRatingSelections(initialRatingSelections);
   }, []);
+
   return (
     <Flex
       gap={8}
@@ -74,13 +75,11 @@ const PostRatingOverview = () => {
         <Text fontWeight={"600"} fontSize={"20px"} color={"#ee4d2d"}>
           {" "}
           <Text as={"span"} fontSize={"26px"}>
-            {star.toFixed(2) || 0}
+            {star.toFixed(1) || 0}
           </Text>{" "}
           trên 5
         </Text>
         <RatingIcon size={6} filled={"yellow.200"} />
-        {/* <RatingSystem rating={star} /> */}
-        {/* filled={"#ee4d2d"} size={6} */}
       </Flex>
       <Flex flexWrap={"wrap"} gap={4}>
         {ratingSelections.map((rating) => {

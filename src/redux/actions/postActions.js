@@ -9,6 +9,7 @@ import {
   setIsApprovedPost,
   setIsLike,
   setIsReview,
+  setIsUpdated,
   setLoading,
   setLoadingApprovePost,
   setPostForNotification,
@@ -515,6 +516,7 @@ export const approveNewPost = (id) => async (dispatch, getState) => {
 
 // Sửa bài đăng
 export const editPost = (postId, newPost) => async (dispatch, getState) => {
+  // console.log("newPost", newPost);
   dispatch(setUpdateLoading(true));
   const {
     user: { userInfo },
@@ -531,12 +533,12 @@ export const editPost = (postId, newPost) => async (dispatch, getState) => {
       newPost,
       config
     );
-    dispatch(setUpdateLoading(false));
+    dispatch(setIsUpdated(true));
     console.log("🚀 ~ sửa bài đăng:", data);
   } catch (error) {
-    dispatch(setUpdateLoading(false));
+    dispatch(setIsUpdated(false));
     dispatch(
-      setUpdateError(
+      setError(
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message
