@@ -364,7 +364,7 @@ function RegisterPage() {
                     <Modal
                       isOpen={isOpen}
                       onClose={onClose}
-                      size={{ base: "sm", md: "xl" }}
+                      size={{ base: "md", md: "xl" }}
                     >
                       <ModalOverlay />
                       <ModalContent>
