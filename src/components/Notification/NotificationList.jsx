@@ -34,6 +34,7 @@ function NotificationList({ closeList }) {
         dispatch(getPostById(postId));
         navigate(`/posts/${postId}`);
       }
+      closeList();
     }
     if (type === "APPROVED" || type === "ADMIN") {
       dispatch(getPostById(postId));

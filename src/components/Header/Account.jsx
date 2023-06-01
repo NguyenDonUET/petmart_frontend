@@ -65,19 +65,18 @@ const Account = () => {
   changeMenuOptions();
   const logoutHandler = () => {
     dispatch(logout());
-    toast({
-      description: "Đăng xuất thành công",
-      status: "success",
-      isClosable: true,
-      position: "top",
-    });
   };
   const handleClick = (link) => {
     if (link.text === "Đăng xuất") {
       logoutHandler();
-    } else {
-      navigate(link.path);
+      toast({
+        description: "Đăng xuất thành công",
+        status: "success",
+        isClosable: true,
+        position: "top",
+      });
     }
+    navigate(link.path);
   };
 
   return (

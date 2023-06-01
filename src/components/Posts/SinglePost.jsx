@@ -21,13 +21,25 @@ import RatingSystem from "../Rating/RatingSystem";
 import { Link as ReactLink } from "react-router-dom";
 import numberWithCommas from "../../utils/numberWithCommas";
 import { ViewIcon } from "@chakra-ui/icons";
+import moment from "moment";
+import { formatDate } from "../../utils/formatDate";
 
 function SinglePost({ post }) {
   const { creator } = post;
-  const { id, image, species, gender, province, title, star, price, views } =
-    post;
+  const {
+    id,
+    image,
+    species,
+    gender,
+    province,
+    title,
+    star,
+    price,
+    views,
+    createdDate,
+  } = post;
   const author = creator.username;
-
+  // console.log(post);
   return (
     <Card maxW="xs">
       <CardBody>
@@ -72,7 +84,7 @@ function SinglePost({ post }) {
               lg: "18px",
             }}
           >
-            {title}
+            {title.length > 25 ? title.substr(0, 25) + "..." : title}
           </Link>
         </Heading>
         <HStack
@@ -96,6 +108,19 @@ function SinglePost({ post }) {
             }}
           >
             Giống {gender}
+          </Box>
+        </Flex>
+        <Flex color={"gray.500"} alignItems={"center"} mt={"6px"}>
+          {/* <Spacer /> */}
+          <Box
+            fontSize={{
+              base: "10px",
+              md: "12px",
+              lg: "14px",
+            }}
+          >
+            {/* {moment(createdDate).fromNow()} */}
+            {formatDate(createdDate)}
           </Box>
         </Flex>
       </CardBody>

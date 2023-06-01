@@ -30,6 +30,8 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
+  ListItem,
+  OrderedList,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Field, Form, Formik } from "formik";
@@ -117,6 +119,12 @@ function RegisterPage() {
     repassword: Yup.string()
       .required("Vui lòng nhập Xác nhận mật khẩu")
       .oneOf([Yup.ref("password"), null], "Mật khẩu không khớp"),
+    policy: Yup.boolean()
+      .oneOf(
+        [true],
+        "Bạn cần chấp nhận điều khoản và quyền riêng tư để tiếp tục"
+      )
+      .required("Vui lòng đọc Điều khoản và chọn đồng ý"),
   });
 
   return (
@@ -142,6 +150,7 @@ function RegisterPage() {
             email: "",
             password: "",
             repassword: "",
+            policy: "",
           }}
           onSubmit={handleSignup}
           validationSchema={validationSchema}
@@ -333,12 +342,54 @@ function RegisterPage() {
                         Điều khoản và dịch vụ
                       </Button>
                     </Checkbox>
-                    <Modal isOpen={isOpen} onClose={onClose}>
+                    <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
                       <ModalOverlay />
                       <ModalContent>
                         <ModalHeader>Điều khoản</ModalHeader>
                         <ModalCloseButton />
-                        <ModalBody>các chính sách như sau</ModalBody>
+                        <ModalBody>
+                          <Text>Người Sử Dụng không được phép: </Text>
+                          <OrderedList>
+                            <ListItem>
+                              {" "}
+                              Tải lên, đăng, truyền tải hoặc bằng cách khác công
+                              khai bất cứ Nội Dung nào trái pháp luật, có hại,
+                              đe dọa, lạm dụng, quấy rối, gây hoang mang, lo
+                              lắng, xuyên tạc, phỉ báng, xúc phạm, khiêu dâm,
+                              bôi nhọ, xâm phạm quyền riêng tư của người khác,
+                              gây căm phẫn, hoặc phân biệt chủng tộc, dân tộc
+                              hoặc bất kỳ nội dung không đúng đắn nào khác;{" "}
+                            </ListItem>
+                            <ListItem>
+                              {" "}
+                              Vi phạm pháp luật, quyền lợi của bên thứ ba;{" "}
+                            </ListItem>
+                            <ListItem>
+                              {" "}
+                              Đăng tải, truyền tin, hoặc bằng bất kỳ hình thức
+                              nào khác hiển thị bất kỳ Nội dung nào có sự xuất
+                              hiện của người chưa thành niên hoặc sử dụng Dịch
+                              vụ gây tổn hại cho người chưa thành niên dưới bất
+                              kỳ hình thức nào;{" "}
+                            </ListItem>
+                            <ListItem>
+                              {" "}
+                              Sử dụng Dịch Vụ hoặc đăng tải Nội Dung để mạo danh
+                              bất kỳ cá nhân hoặc tổ chức nào, hoặc bằng cách
+                              nào khác xuyên tạc cá nhân hoặc tổ chức;
+                            </ListItem>
+                            <ListItem>
+                              . Giả mạo các tiêu đề hoặc bằng cách khác ngụy tạo
+                              các định dạng nhằm che giấu nguồn gốc của bất kỳ
+                              Nội Dung nào được truyền tải thông qua Dịch Vụ;{" "}
+                            </ListItem>
+                            <ListItem>
+                              {" "}
+                              Đăng bán sản phẩm giả mạo, mục đích phi thương
+                              mại;
+                            </ListItem>
+                          </OrderedList>
+                        </ModalBody>
 
                         <ModalFooter>
                           <Button
