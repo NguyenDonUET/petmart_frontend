@@ -69,8 +69,7 @@ function RegisterPage() {
       isClosable: true,
       position: "top",
     });
-    navigate(redirectToLogin);
-    navigate("/login");
+    navigate("/");
   };
 
   useEffect(() => {
