@@ -22,7 +22,15 @@ const filterCategory = [
     title: "Loại thú cưng",
     name: "species",
     data: {
-      displayText: ["Tất cả", "Chó", "Mèo", "Khác"],
+      displayText: [
+        "Tất cả",
+        "Chó",
+        "Mèo",
+        "Chim",
+        "Gà",
+        "Chuột Hamster",
+        "Khác",
+      ],
     },
   },
   {

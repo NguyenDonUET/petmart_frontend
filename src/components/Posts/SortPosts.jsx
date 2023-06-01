@@ -17,7 +17,7 @@ const sortBy = [
   { text: "Ngày đăng (mới đến cũ)", value: "", property: "" },
   // { text: "Ngày đăng (cũ đến mới)", value: "desc", property: "createdDate" },
   { text: "Giá (giảm dần)", value: "desc", property: "price" },
-  // { text: "Giá (giảm dần)", value: "desc", property: "price" },
+  { text: "Giá (tăng dần)", value: "asc", property: "price" },
   { text: "Lượt đánh giá (giảm dần)", value: "desc", property: "star" },
   { text: "Lượt xem (giảm dần)", value: "desc", property: "views" },
 ];

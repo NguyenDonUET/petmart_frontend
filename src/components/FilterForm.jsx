@@ -2,11 +2,15 @@ import { FormControl, FormLabel, Select } from "@chakra-ui/react";
 import React, { useRef } from "react";
 import { filterPosts } from "../redux/actions/postActions";
 
+const mouse = "Chuột Hamster";
 const myMap = {
   "Hà nội": "Hà nội",
   "Bắc Ninh": "Bắc Ninh",
   Chó: "Chó",
   Mèo: "Mèo",
+  [mouse]: "Chuột Hamster",
+  Gà: "Gà",
+  Chim: "Chim",
   Khác: "Khác",
   "0-12": "0",
   "12-36": "13",
