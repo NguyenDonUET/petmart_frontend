@@ -77,6 +77,7 @@ const ProfilePage = () => {
    console.log(userInfo);
    let expriredPosts = [];
    let newCreatedPostList = [];
+   let sold = [];
 
    // Modal
    const { isOpen, onOpen, onClose } = useDisclosure();
@@ -84,6 +85,7 @@ const ProfilePage = () => {
    if (createdPostList) {
       expriredPosts = createdPostList.filter((post) => (moment(post.endDate).diff(moment(), "days") < 0));
       newCreatedPostList = createdPostList.filter((post) => (moment(post.endDate).diff(moment(), "days") >= 0));
+      sold = createdPostList.filter((post) => post.available == false);
    }
 
    // cập nhật danh sách post
@@ -299,12 +301,12 @@ const ProfilePage = () => {
                      </Tab>
                      <Tab >
                         <Text fontSize={{ base: '12px', sm: '12px', md: '14px', lg: 'md' }}>
-                           Bài viết yêu thích
+                           Yêu thích
                         </Text>
                      </Tab>
                      <Tab >
                         <Text fontSize={{ base: '12px', sm: '12px', md: '14px', lg: 'md' }}>
-                           Bài viết đã đăng
+                           Đang hiển thị
                         </Text>
                      </Tab>
                      {
@@ -315,10 +317,15 @@ const ProfilePage = () => {
                         &&
                         <Tab >
                            <Text fontSize={{ base: '12px', sm: '12px', md: '14px', lg: 'md' }}>
-                              Bài viết đã hết hạn
+                              Đã hết hạn
                            </Text>
                         </Tab>
                      }
+                     <Tab>
+                        <Text fontSize={{ base: '12px', sm: '12px', md: '14px', lg: 'md' }}>
+                           Đã bán
+                        </Text>
+                     </Tab>
                   </TabList>
                   <TabPanels>
                      <TabPanel>
@@ -385,9 +392,13 @@ const ProfilePage = () => {
                                  })}
                            </Grid>
                         }
-                        {favouritePostList &&
+                        {
+                           favouritePostList &&
                            favouritePostList.length == 0 &&
-                           "Danh sách bài viết ưa thích sẽ được hiển thị tại đây"}
+                           <Text fontSize={{ base: '12px', sm: '12px', md: '14px', lg: 'md' }}>
+                              Danh sách bài viết ưa thích sẽ được hiển thị tại đây
+                           </Text>
+                        }
                      </TabPanel>
                      <TabPanel>
                         {loading && <LoadingList />}
@@ -412,9 +423,13 @@ const ProfilePage = () => {
                                  })}
                            </Grid>
                         }
-                        {newCreatedPostList &&
+                        {
+                           newCreatedPostList &&
                            newCreatedPostList.length == 0 &&
-                           "Danh sách bài viết đã đăng sẽ được hiển thị tại đây"}
+                           <Text fontSize={{ base: '12px', sm: '12px', md: '14px', lg: 'md' }}>
+                              Danh sách bài viết đã đăng sẽ được hiển thị tại đây
+                           </Text>
+                        }
                      </TabPanel>
                      {
                         userInfo.user.role == "seller"
@@ -445,11 +460,46 @@ const ProfilePage = () => {
                                     })}
                               </Grid>
                            }
-                           {expriredPosts &&
+                           {
+                              expriredPosts &&
                               expriredPosts.length == 0 &&
-                              "Danh sách bài viết đã hết hạn sẽ hiển thị tại đây"}
+                              <Text fontSize={{ base: '12px', sm: '12px', md: '14px', lg: 'md' }}>
+                                 Danh sách bài viết đã hết hạn sẽ hiển thị tại đây
+                              </Text>
+                           }
                         </TabPanel>
                      }
+                     <TabPanel>
+                        {loading && <LoadingList />}
+                        {!loading &&
+                           <Grid
+                              templateColumns={{
+                                 base: "repeat(1, 1fr)",
+                                 sm: "repeat(2, 1fr)",
+                                 md: "repeat(3, 1fr)",
+                                 lg: "repeat(4, 1fr)",
+                              }}
+                              gap={1}
+                           >
+                              {
+                                 sold.length > 0 &&
+                                 sold.map((post) => {
+                                    return (
+                                       <GridItem key={post.id}>
+                                          <SinglePost post={post} />
+                                       </GridItem>
+                                    );
+                                 })}
+                           </Grid>
+                        }
+                        {
+                           sold &&
+                           sold.length == 0 &&
+                           <Text fontSize={{ base: '12px', sm: '12px', md: '14px', lg: 'md' }}>
+                              Danh sách sản phẩm đã bán sẽ được hiển thị tại đây
+                           </Text>
+                        }
+                     </TabPanel>
                   </TabPanels>
                </Tabs>
             )}
@@ -459,7 +509,7 @@ const ProfilePage = () => {
             isOpen={modalEdit}
             onClose={handleCloseModalEdit}
             closeOnOverlayClick={false}
-            size={{base: 'xs', md: 'sm'}}
+            size={{ base: 'xs', md: 'sm' }}
          >
             <ModalOverlay />
             <ModalContent>
@@ -540,7 +590,7 @@ const ProfilePage = () => {
                                           mb={'4'}
                                        >
                                           <FormLabel>Số Căn cước công dân</FormLabel>
-                                          <Input {...field} disabled/>
+                                          <Input {...field} disabled />
                                           <FormErrorMessage>{form.errors.citizen}</FormErrorMessage>
                                        </FormControl>
                                     )
@@ -610,7 +660,7 @@ const ProfilePage = () => {
             isOpen={modalPassword}
             onClose={handleCloseModalPassword}
             closeOnOverlayClick={false}
-            size={{base: 'xs', md: 'sm'}}
+            size={{ base: 'xs', md: 'sm' }}
          >
             <ModalOverlay />
             <ModalContent>
