@@ -44,7 +44,7 @@ const router = createBrowserRouter(
       />
       <Route element={<PrivateRoute />}>
         <Route
-          path="profile"
+          path="profile/:id"
           element={
             <LazyLoadingContainer>
               <LazyProfilePage />

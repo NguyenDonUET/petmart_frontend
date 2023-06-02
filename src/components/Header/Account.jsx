@@ -55,9 +55,9 @@ const Account = () => {
     }
     showOptions = buyerAccountLinks;
     const { user } = userInfo;
-    if (user.role === "admin") {
+    if (user && user.role === "admin") {
       showOptions = adminAccountLinks;
-    } else if (user.role === "seller" && user.isApproved) {
+    } else if (user && user.role === "seller" && user.isApproved) {
       showOptions = sellerAccountLinks;
     }
   };
@@ -66,6 +66,7 @@ const Account = () => {
     dispatch(logout());
   };
   const handleClick = (link) => {
+    let linkPath = link.path;
     if (link.text === "Đăng xuất") {
       logoutHandler();
       toast({
@@ -75,7 +76,10 @@ const Account = () => {
         position: "top",
       });
     }
-    navigate(link.path);
+    if (link.text === "Thông tin người dùng") {
+      linkPath = `${link.path}/${userInfo.user.id}`;
+    }
+    navigate(linkPath);
   };
 
   return (

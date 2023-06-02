@@ -89,7 +89,7 @@ const PostDetail = () => {
       setPostInfo(singlePost.post);
       setCreator(singlePost.creator);
     }
-    console.log("🚀 ~ singlePost:", singlePost);
+    // console.log("🚀 ~ singlePost:", singlePost);
   }, [singlePost]);
 
   useEffect(() => {

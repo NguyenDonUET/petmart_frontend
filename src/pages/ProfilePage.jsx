@@ -56,20 +56,18 @@ import {
   logout,
   updateUserInfo,
 } from "../redux/actions/userActions";
-import { useNavigate } from "react-router-dom";
-import UserInfo from "../components/Profile/UserInfo";
+import { useNavigate, useParams } from "react-router-dom";
+// import UserInfo from "../components/Profile/UserInfo";
 import {
   setIsChangedPassword,
   setIsUpdated,
   userLogout,
 } from "../redux/slices/user";
-// import { setIsChangedPassword } from "../redux/slices/user";
-
-const mapApprove = {
-  0: "true",
-};
+import axios from "axios";
 
 const ProfilePage = () => {
+  const [otherUser, setOtherUser] = useState(null);
+
   // isOpen cho modal
   const [modalEdit, setModalEdit] = useState(false);
   const [modalPassword, setModalPassword] = useState(false);
@@ -82,6 +80,7 @@ const ProfilePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
+  const params = useParams();
   const user = useSelector((state) => state.user);
   const post = useSelector((state) => state.post);
   const { loading, createdPostList, favouritePostList } = post;
@@ -119,6 +118,7 @@ const ProfilePage = () => {
     dispatch(updateUserInfo(values));
   };
 
+  // nếu update thành công hoặc thất bại thì hiện thông báo
   useEffect(() => {
     if (isUpdated) {
       toast({
@@ -128,7 +128,7 @@ const ProfilePage = () => {
         position: "top",
       });
       dispatch(setIsUpdated(false));
-      // nếu là đổ password thì logout
+      // nếu là đổi password thì logout
       if (isChangedPassword) {
         dispatch(setIsChangedPassword(false));
         localStorage.clear();
@@ -141,7 +141,6 @@ const ProfilePage = () => {
         setModalPassword(false);
       }
     }
-    // console.log("after edit", updateError);
     if (updateError) {
       console.log("updateError", updateError);
       toast({
@@ -157,12 +156,26 @@ const ProfilePage = () => {
     dispatch(editPassword(values));
   };
 
+  async function getOtherUserInfo() {
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/users/${params.id}`
+    );
+    // console.log("user", data.user);
+    setOtherUser(data.user);
+  }
   // cập nhật danh sách post
   useEffect(() => {
-    // dispatch(setIsChangedPassword(false));
-    dispatch(getCreatedPosts(userInfo.user.id));
-    dispatch(getFavouritePosts(userInfo.user.id));
+    // console.log(params);
+    getOtherUserInfo();
+    dispatch(getCreatedPosts(params.id));
+    dispatch(getFavouritePosts(params.id));
+    // dispatch(getCreatedPosts(userInfo.user.id));
+    // dispatch(getFavouritePosts(userInfo.user.id));
   }, []);
+
+  useEffect(() => {
+    getOtherUserInfo();
+  }, [userInfo]);
 
   // handleModal
   const handleOpenModalEdit = () => {
@@ -199,7 +212,7 @@ const ProfilePage = () => {
     <>
       <Box
         height={"calc(50vh - 84px)"}
-        bgImage={"url('./images/user.png')"}
+        bgImage={"url('/images/user.png')"}
         bgPosition="center"
         bgSize={"cover"}
         bgRepeat="no-repeat"
@@ -225,40 +238,42 @@ const ProfilePage = () => {
           left={"calc(6% + 145px)"}
         >
           <Text as={"b"} fontSize={"xl"} minWidth={"20vw"}>
-            {userInfo.user.username}
+            {otherUser && otherUser.username}
           </Text>
-          <Flex
-          // justifyContent={'end'}
-          >
-            <Tooltip label={"Đổi mật khẩu"} aria-label={"Đổi mật khẩu"}>
-              <IconButton
-                size={{ base: "sm", md: "md" }}
-                mt={"3px"}
-                colorScheme="teal"
-                variant={"outline"}
-                aria-label="Đổi mật khẩu"
-                icon={<Icon as={IoKeyOutline} />}
-                onClick={handleOpenModalPassword}
-              />
-            </Tooltip>
-            <Tooltip
-              label={"Chỉnh sửa thông tin cá nhân"}
-              aria-label={"Chỉnh sửa thông tin cá nhân"}
+          {otherUser && otherUser.id === userInfo.user.id && (
+            <Flex
+            // justifyContent={'end'}
             >
-              <IconButton
-                size={{ base: "sm", md: "md" }}
-                mt={"3px"}
-                ml={"10px"}
-                colorScheme="teal"
-                variant={"outline"}
-                aria-label="Chỉnh sửa thông tin cá nhân"
-                icon={<EditIcon />}
-                onClick={handleOpenModalEdit}
-              />
-            </Tooltip>
-          </Flex>
+              <Tooltip
+                label={"Chỉnh sửa thông tin cá nhân"}
+                aria-label={"Chỉnh sửa thông tin cá nhân"}
+              >
+                <IconButton
+                  size={{ base: "sm", md: "md" }}
+                  mt={"3px"}
+                  colorScheme="teal"
+                  variant={"outline"}
+                  aria-label="Chỉnh sửa thông tin cá nhân"
+                  icon={<EditIcon />}
+                  onClick={handleOpenModalEdit}
+                />
+              </Tooltip>
+              <Tooltip label={"Đổi mật khẩu"} aria-label={"Đổi mật khẩu"}>
+                <IconButton
+                  size={{ base: "sm", md: "md" }}
+                  mt={"3px"}
+                  ml={"10px"}
+                  colorScheme="teal"
+                  variant={"outline"}
+                  aria-label="Đổi mật khẩu"
+                  icon={<Icon as={IoKeyOutline} />}
+                  onClick={handleOpenModalPassword}
+                />
+              </Tooltip>
+            </Flex>
+          )}
         </Flex>
-        {userInfo.user.role && userInfo.user.role == "admin" && (
+        {otherUser && otherUser.role == "admin" && (
           <Text
             display={{ base: "none", sm: "block" }}
             fontSize={"md"}
@@ -270,7 +285,7 @@ const ProfilePage = () => {
             Admin hệ thống
           </Text>
         )}
-        {userInfo.user.role && userInfo.user.role == "seller" && (
+        {otherUser && otherUser.role == "seller" && (
           <Text
             display={{ base: "none", sm: "block" }}
             fontSize={"md"}
@@ -282,7 +297,7 @@ const ProfilePage = () => {
             Người bán
           </Text>
         )}
-        {userInfo.user.role && userInfo.user.role == "buyer" && (
+        {otherUser && otherUser.role == "buyer" && (
           <Text
             display={{ base: "none", sm: "block" }}
             fontSize={"md"}
@@ -295,7 +310,7 @@ const ProfilePage = () => {
           </Text>
         )}
       </Box>
-      <Box marginX={"8"} mt={"10vh"} minHeight={"42vh"}>
+      <Box marginX={"8"} mt={"10vh"} minHeight={"60vh"}>
         {true && (
           <Tabs
             padding={3}
@@ -379,7 +394,7 @@ const ProfilePage = () => {
                         lg: "md",
                       }}
                     >
-                      {userInfo.user.email}
+                      {otherUser && otherUser.email}
                     </Text>
                   </GridItem>
                   <GridItem>
@@ -404,7 +419,7 @@ const ProfilePage = () => {
                         lg: "md",
                       }}
                     >
-                      {userInfo.user.phone}
+                      {otherUser && otherUser.phone}
                     </Text>
                   </GridItem>
                   <GridItem>
@@ -429,7 +444,7 @@ const ProfilePage = () => {
                         lg: "md",
                       }}
                     >
-                      {userInfo.user.address}
+                      {otherUser && otherUser.address}
                     </Text>
                   </GridItem>
                 </Grid>
@@ -466,6 +481,7 @@ const ProfilePage = () => {
                       md: "14px",
                       lg: "md",
                     }}
+                    fontWeight={"bold"}
                   >
                     Chưa có bài viết yêu thích
                   </Text>
@@ -502,6 +518,8 @@ const ProfilePage = () => {
                       md: "14px",
                       lg: "md",
                     }}
+                    textAlign={"center"}
+                    fontWeight={"bold"}
                   >
                     Danh sách bài viết đã đăng sẽ được hiển thị tại đây
                   </Text>
@@ -541,6 +559,8 @@ const ProfilePage = () => {
                           md: "14px",
                           lg: "md",
                         }}
+                        textAlign={"center"}
+                        fontWeight={"bold"}
                       >
                         Danh sách bài viết đã hết hạn sẽ hiển thị tại đây
                       </Text>
@@ -577,6 +597,8 @@ const ProfilePage = () => {
                       md: "14px",
                       lg: "md",
                     }}
+                    textAlign={"center"}
+                    fontWeight={"bold"}
                   >
                     Danh sách sản phẩm đã bán sẽ được hiển thị tại đây
                   </Text>

@@ -43,6 +43,16 @@ export const userSlice = createSlice({
     },
     setUserInfo: (state, { payload }) => {
       state.userInfo = { ...state.userInfo, ...payload };
+      // console.log("🚀 ~ payload:", payload);
+      const userToken = JSON.parse(localStorage.getItem("userInfo"));
+      // console.log("🚀 ~ userToken:", userToken);
+      localStorage.setItem(
+        "userInfo",
+        JSON.stringify({
+          accessToken: userToken.accessToken,
+          user: payload.user,
+        })
+      );
       state.error = null;
       state.loading = false;
     },
