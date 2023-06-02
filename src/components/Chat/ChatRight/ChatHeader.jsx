@@ -41,7 +41,7 @@ const ChatHeader = () => {
       boxShadow="0 1px 3px rgba(0, 0, 0, 0.2)"
     >
       <Flex align="center" px="4" py="2" maxW="1200px" mx="auto" gap={4}>
-        <Avatar boxSize={10} />
+        <Avatar boxSize={10} name={userName} />
         <Flex flexDirection={"column"}>
           <Text fontWeight={"600"} fontSize={"16px"}>
             {userName}

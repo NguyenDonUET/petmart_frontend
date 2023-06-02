@@ -30,9 +30,9 @@ const SortPosts = () => {
 
   useEffect(() => {
     let sb = sortBy[selectVal].property.length;
-    console.log("🚀 ~ sb:", sb);
+    // console.log("🚀 ~ sb:", sb);
     let ob = sortBy[selectVal].value.length;
-    console.log("🚀 ~ ob:", ob);
+    // console.log("🚀 ~ ob:", ob);
     let newSortQuery = `&orderBy=${sortBy[selectVal].property}&order=${sortBy[selectVal].value}`;
     if (sb.length === 0 || ob.length === 0) {
       newSortQuery = "";

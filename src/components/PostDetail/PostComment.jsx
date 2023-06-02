@@ -18,7 +18,7 @@ const PostComment = ({ review, toggleView, index, isShow }) => {
       {review ? (
         <Box>
           <Flex paddingBottom={3}>
-            <Avatar boxSize={9} />
+            <Avatar boxSize={9} name={review.creator.username} />
             <Box ml={4}>
               <Flex gap={3}>
                 <Text>{review.creator.username}</Text>

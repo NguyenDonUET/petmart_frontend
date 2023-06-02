@@ -47,7 +47,6 @@ const Account = () => {
   const toast = useToast();
   const navigate = useNavigate();
 
-  // console.log(userInfo);
   let showOptions;
   const changeMenuOptions = () => {
     if (!userInfo) {
@@ -83,7 +82,7 @@ const Account = () => {
     <Menu>
       <MenuButton>
         <HStack>
-          <Avatar boxSize={8}>
+          <Avatar boxSize={8} name={userInfo && userInfo.user.username}>
             {userInfo && <AvatarBadge boxSize="18px" bg="green.500" />}
           </Avatar>
           <Text display={{ base: "none", md: "block" }}>

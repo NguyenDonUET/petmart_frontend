@@ -48,7 +48,7 @@ const ChatSingleUser = ({ user }) => {
         // justifyContent={"center"}
       >
         <Tooltip label={user.username}>
-          <Avatar />
+          <Avatar name={user.username} />
         </Tooltip>
         <Flex flexDirection={"column"} display={{ base: "none", sm: "flex" }}>
           <Heading fontSize={"lg"} fontWeight={"500"}>

@@ -16,15 +16,16 @@ function ChatMessageInput({ handleSendMess }) {
   const [disable, setDisable] = useState(true);
 
   const handleSendMessage = () => {
+    if (message.length <= 0) {
+      return;
+    }
     handleSendMess(message);
     setMessage("");
     setDisable(true);
   };
   const handleChange = (event) => {
-    // if (event.target.value.trim().length >= 0) {
-    //   // console.log("empty");
-    //   console.log(event.target.value);
-    // }
+    console.log("🚀 ~ event:", event.target.value);
+
     if (event.target.value === "") {
       setDisable(true);
     } else {
@@ -35,6 +36,7 @@ function ChatMessageInput({ handleSendMess }) {
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
+      // console.log(message);
       handleSendMessage();
     }
   };
@@ -51,6 +53,7 @@ function ChatMessageInput({ handleSendMess }) {
     >
       <Flex align={"center"} width={"100%"} gap={4}>
         <Input
+          autoFocus={true}
           placeholder="Nhập tin nhắn"
           value={message}
           onChange={(event) => handleChange(event)}
