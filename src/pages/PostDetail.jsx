@@ -267,7 +267,7 @@ const PostDetail = () => {
                 }}
                 gap={{ base: "0px", md: "4px", lg: "4px" }}
               >
-                <Button
+               {userInfo &&  <Button
                   mt={{ base: "10px", sm: "0" }}
                   bgColor={"green"}
                   color={"white"}
@@ -279,7 +279,7 @@ const PostDetail = () => {
                   isDisabled={creator.id === userInfo.user.id}
                 >
                   Liên hệ với người bán
-                </Button>
+                </Button>}
                 <Spacer />
                 <Text fontSize={{ base: "14px", sm: "16px" }}>
                   Tác giả:
